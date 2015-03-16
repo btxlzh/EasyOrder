@@ -1,7 +1,7 @@
 {
-  "name": "easyorder",
+  "name": "client_blank",
   "version": "1.0.0",
-  "description": "EasyOrder: An Ionic project",
+  "description": "Client_Blank: An Ionic project",
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-sass": "^0.7.1",
