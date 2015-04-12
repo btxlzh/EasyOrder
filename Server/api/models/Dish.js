@@ -8,9 +8,11 @@
 module.exports = {
 
   attributes: {
-    name    :     { type : 'string'},
-    price   :     { type : 'int' },
-    dish_id :     { type : 'int' },
+    name    :     	{ type : 'string',required: true},
+    price   :     	{ type : 'integer' },
+    image_url: 	  	{ type : 'string'},
+    description: 	{ type : 'text'},
+    rating : 		{type: 'integer'}
   }
 };
 

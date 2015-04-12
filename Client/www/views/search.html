@@ -10,7 +10,7 @@
 			</button>
 		</div>
 		<ul class="list">
-			<ion-item ng-repeat="one in restraunts | filter:query" ui-sref="app.search.detail({id: one.id})">
+			<ion-item ng-repeat="one in restaurants | filter:query" ui-sref="app.search.detail({id: one.id})">
 				<h2>{{one.name}}</h2>
 				<h3>{{one.type}}</h3>
 				<h3>Price: {{one.price}}</h3>
