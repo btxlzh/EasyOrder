@@ -12,7 +12,10 @@ module.exports = {
     price   :     	{ type : 'integer' },
     image_url: 	  	{ type : 'string'},
     description: 	{ type : 'text'},
-    rating : 		{type: 'integer'}
+    rating : 		{ type: 'integer'},
+    owner:{
+            model:'Menu'
+        }
   }
 };
 

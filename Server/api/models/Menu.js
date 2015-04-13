@@ -8,7 +8,14 @@
 module.exports = {
 
   attributes: {
-
+  	dishes : {
+  		collection: 'Dish',
+        via: 'owner'
+  	},
+  	owner: {
+      collection: 'Restaurant',
+      via: 'menu'
+    }
   }
 };
 

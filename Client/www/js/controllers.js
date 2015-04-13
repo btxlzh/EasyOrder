@@ -25,7 +25,7 @@ Controllers.controller('MainCtrl', function($scope, $ionicSideMenuDelegate){
 });
 
 Controllers.controller('SearchCtrl', function($scope, $http){
-  $http.get('http://localhost:1337/restaurant/getAll').then(function(resp) {
+  $http.get('http://localhost:1337/restaurant/').then(function(resp) {
    	$scope.restaurants = resp.data;
     // For JSON responses, resp.data contains the result
   }, function(err) {

@@ -10,7 +10,12 @@ module.exports = {
   attributes: {
     name  : { type: 'string' },
     city  : { type: 'string' },
-    email : { type: 'email',  unique: true }
+    email : { type: 'email',  unique: true },
+    menu: {
+      collection: 'Menu',
+      via: 'owner',
+      dominant: true
+    }
   }
 };
 
