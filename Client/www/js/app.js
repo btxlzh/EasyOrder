@@ -1,8 +1,8 @@
 
-var app = angular.module('ionicApp', ['ionic','Controllers'])
+var app = angular.module('ionicApp', ['ionic','controllers','ngCordova'])
 
 app.config(function($stateProvider, $urlRouterProvider) {
-  $urlRouterProvider.otherwise('/search')
+
 
   $stateProvider.state('app', {
     abstract: true,
@@ -45,6 +45,8 @@ app.config(function($stateProvider, $urlRouterProvider) {
       }
     }
   })
+
+  $urlRouterProvider.otherwise('/search')
 })
 
 app.factory('searchService', function() {

@@ -1,5 +1,6 @@
 var Controllers = angular.module('Controllers',[]);
 
+
 Controllers.controller('searchCtrl', function($scope, searchService) {
   $scope.search = searchService.search
 })
@@ -32,6 +33,19 @@ Controllers.controller('SearchCtrl', function($scope, $http){
 	$scope.msg=err;
     // err.status will contain the status code
   })
+
  
 	
 });
+Controllers.controller("ScanCtrl", function($scope, $cordovaBarcodeScanner) {
+ 
+    $scope.scanBarcode = function() {
+        $cordovaBarcodeScanner.scan().then(function(imageData) {
+            alert(imageData.text);
+            console.log("Barcode Format -> " + imageData.format);
+            console.log("Cancelled -> " + imageData.cancelled);
+        }, function(error) {
+            console.log("An error happened -> " + error);
+        });
+    };
+  });
