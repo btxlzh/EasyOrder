@@ -1,5 +1,5 @@
 
-var app = angular.module('ionicApp', ['ionic','controllers','ngCordova'])
+var app = angular.module('ionicApp', ['ionic','Controllers','ngCordova'])
 
 app.config(function($stateProvider, $urlRouterProvider) {
 
