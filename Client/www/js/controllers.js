@@ -30,7 +30,7 @@ Controllers.controller('SearchCtrl', function($scope, $http){
    	$scope.restaurants = resp.data;
     // For JSON responses, resp.data contains the result
   }, function(err) {
-	$scope.msg=err;
+	   $scope.msg=err;
     // err.status will contain the status code
   })
 

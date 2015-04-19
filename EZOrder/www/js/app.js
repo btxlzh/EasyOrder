@@ -38,12 +38,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
 
   // Each tab has its own nav history stack:
 
-  .state('tab.scan', {
-    url: '/scan',
+  .state('tab.search', {
+    url: '/search',
     views: {
-      'tab-scan': {
-        templateUrl: 'templates/tab-scan.html',
-        controller: 'ScanCtrl'
+      'tab-search': {
+        templateUrl: 'templates/tab-search.html',
+        controller: 'SearchCtrl'
       }
     }
   })
@@ -75,9 +75,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         controller: 'AccountCtrl'
       }
     }
-  });
+  })
+  .state('tab.account-detail', {
+  url: '/account/info',
+  views: {
+    'tab-account': {
+      templateUrl: 'templates/account-detail.html',
+      controller: 'AccountDetailCtrl'
+    }
+  }
+  })
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/scan');
+  $urlRouterProvider.otherwise('/tab/search');
 
 });
