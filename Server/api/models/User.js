@@ -10,9 +10,19 @@ module.exports = {
 
   attributes: require('waterlock').models.user.attributes({
     
-    /* e.g.
-    nickname: 'string'
-    */
+  	
+    phoneNumber: {
+    	type: 'string',
+    	defaultsTo: '111-222-3333'
+  	},
+  	nickName: {
+    	type: 'string',
+    	defaultsTo: 'OtherMan'
+  	},
+  	photoUrl:{
+  		type: 'string',
+  		defaultsTo: sails.config.EZconf.baseURL+'images/defaultPhoto.jpg'
+  	}
     
   }),
   

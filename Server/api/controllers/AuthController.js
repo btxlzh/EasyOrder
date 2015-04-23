@@ -9,10 +9,8 @@
  */
 
 module.exports = require('waterlock').waterlocked({
-  /* e.g.
-    action: function(req, res){
-  
+    loginWithToken: function(req,res){
+        res.send(req.session.user);
     }
-  */
 
 });

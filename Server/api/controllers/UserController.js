@@ -9,9 +9,8 @@
  */
 
 module.exports = require('waterlock').actions.user({
-  /* e.g.
-    action: function(req, res){
-  
+    me: function(req, res){
+    	console.log(req.session.user);
+     	res.send(req.session.user);
     }
-  */
 });

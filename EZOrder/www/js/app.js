@@ -5,8 +5,10 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','ngCordova'])
-
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','localStorageServices','ngCordova'])
+.config(['$httpProvider', function($httpProvider) {
+  $httpProvider.defaults.withCredentials = true;
+}])
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -47,7 +49,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
       }
     }
   })
-
+ .state('tab.restaurant-detail', {
+    url: '/restaurant/:id',
+    views: {
+       'tab-search': {
+          templateUrl: 'templates/restaurant-detail.html',
+          controller: 'RestaurantDetailCtrl'
+        }
+    }
+  })
   .state('tab.chats', {
       url: '/chats',
       views: {
@@ -66,22 +76,31 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         }
       }
     })
-
-  .state('tab.account', {
-    url: '/account',
+   
+  .state('tab.login', {
+    url: '/login',
     views: {
       'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
+        templateUrl: 'templates/login.html',
+        controller: 'LoginCtrl'
       }
     }
   })
-  .state('tab.account-detail', {
-  url: '/account/info',
+  .state('tab.account', {
+  url: '/account',
   views: {
     'tab-account': {
-      templateUrl: 'templates/account-detail.html',
-      controller: 'AccountDetailCtrl'
+      templateUrl: 'templates/account.html',
+      controller: 'AccountCtrl',
+    }
+  }
+  })
+  .state('tab.editPrifile', {
+  url: '/account/edit',
+  views: {
+    'tab-account': {
+      templateUrl: 'templates/edit-profile.html',
+      controller: 'ProfileCtrl',
     }
   }
   })
@@ -89,4 +108,5 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/search');
 
-});
+})
+;

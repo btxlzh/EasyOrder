@@ -6,17 +6,23 @@
  */
 var qr = require('qr-image');
 module.exports = {
-	getAll: function (req, res) {
+	   getAll: function (req, res) {
 		var xx;
 		Restaurant.find().exec(function (err, found) {return res.send(found);});
   	},
   	getQRcode: function (req, res){
   		id = req.param('id');
-  		var text ='http://localhost:1337/restaurant/'+ id;
+      console.log("getQRcode");
+  		var text ='http://localhost:1337/restaurant/?id='+ id;
         var img = qr.image(text);
         res.writeHead(200, {'Content-Type': 'image/png'});
         img.pipe(res);	
-  	}
-  	
+  	},
+  	authSession: function (req, res) {
+      return res.send("session got it");
+    },
+    token: function (req, res) {
+      return res.send(" token got it");
+    },
 };
 

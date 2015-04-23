@@ -28,10 +28,14 @@ module.exports.policies = {
   
   '*': true,
   RestaurantController: {
-    getQRcode: ['sessionAuth'],
+    getQRcode: ['hasjsonWebToken'],
+    authSession : ['sessionAuth'],
+    token  : ['hasjsonWebToken'],
 
+  },
+  UserController:{
+    me:['sessionAuth'],
   }
-
   /***************************************************************************
   *                                                                          *
   * Here's an example of mapping some policies to run before a controller    *

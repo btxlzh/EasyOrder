@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ['ionic'])
 
 .controller('ChatsCtrl', function($scope, Chats) {
   $scope.chats = Chats.all();
@@ -11,55 +11,88 @@ angular.module('starter.controllers', [])
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('AccountCtrl', function($scope,$http,$state) {
+.controller('LoginCtrl', function($q,$scope,$http,$state,$ionicPopup,$ionicHistory,AccountService,ErrorService,LocalStorage) {
+  
+  $scope.postData={};
   $scope.login = function(){
-    console.log($scope.postData);
     //$http.get("http://localhost:1337/auth/login?email="+$scope.postData.email+"&password="+$scope.postData.password)
-    $http.post("http://localhost:1337/auth/login/",$scope.postData)
-    .then(function(resp) {
-        $scope.msg= "succ"
-        // For JSON responses, resp.data contains the result
-        $state.go('tab.account-detail');
-      }, function(err) {
-        $scope.msg="error:"+err;
-        // err.status will contain the status code
-      })
-
-    }
+    AccountService.login($scope.postData).then(function(data){
+      console.log(data);
+      var promise1 = AccountService.setUser(data.user);
+      var promise2 = LocalStorage.setObj('EZ_LOCAL_TOKEN',data.token);
+      $q.all([promise1,promise2]).then(function(){
+          $state.go('tab.account');
+      });
+    },function(err){
+        ErrorService.popUp("WRONG email OR password!");
+    })
+    return ;
+  }
 })
-.controller('AccountDetailCtrl', function($scope,$http,$state) {
-  $http.get("http://localhost:1337/user/jwt")
-    .then(function(resp) {
-        $scope.data= resp.data
-        // For JSON responses, resp.data contains the result
-      }, function(err) {
-        $scope.data="error:"+err;
-        // err.status will contain the status code
-      })
+.controller('AccountCtrl', function($scope,$http,$state,$ionicHistory,AccountService,LocalStorage) {
+  
+  $scope.$on('$ionicView.beforeEnter', function(){
+    AccountService.getUser().then(function(data){
+        $scope.user=data;
+    },function(err){
+        $ionicHistory.nextViewOptions({
+            disableAnimate: true,
+            disableBack: true
+          });
+        $state.go('tab.login');
+    })
+  });
+  console.log('user'+$scope.user);
   $scope.logout = function(){
-    //$http.get("http://localhost:1337/auth/login?email="+$scope.postData.email+"&password="+$scope.postData.password)
-    $http.get("http://localhost:1337/auth/logout")
-    .then(function(resp) {
-        $scope.msg= "succ"
+    AccountService.logout()
+    .success(function(resp) {
+        $state.go('tab.login');
         // For JSON responses, resp.data contains the result
-        $state.go('tab.account');
-      }, function(err) {
-        $scope.msg="error:"+err;
-        // err.status will contain the status code
-      })
-    }
+   });
+  }
 })
+.controller("RestaurantDetailCtrl",function($scope,$http, $stateParams,DataService,ErrorService) {
+    DataService.getRestaurant($stateParams.id)
+    .success(function(data){
+        $scope.restaurant = data;
+        console.log(data);
+    })
+    .error(function(error){
+        ErrorService.popUp("unable to get restaurant data from server");
+    });
+})
+.controller("SearchCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,DataService,ErrorService) {
 
-.controller("SearchCtrl", function($scope, $cordovaBarcodeScanner) {
- 
+     // For JSON responses, resp.data contains the result
+    DataService.getAllRestaurants()
+    .success(function(resp){
+        $scope.restaurants = resp;
+    })
+    .error(function(error){
+         ErrorService.popUp("unable to get restaurants data from server");
+    });
+   
     $scope.scanBarcode = function() {
         $cordovaBarcodeScanner.scan().then(function(imageData) {
-            alert(imageData.text);
-            console.log("Barcode Format -> " + imageData.format);
-            console.log("Cancelled -> " + imageData.cancelled);
+            var restaurantID= DataService.getRestaurantByQRCode(imageData.text);
+            state.go('tab.restaurant-detail',{'id':restaurantID});
         }, function(error) {
-            console.log("An error happened -> " + error);
+             ErrorService.popUp("Wrong Barcode");
         });
     };
  
+})
+.controller("ProfileCtrl",function($scope,$http,$state,AccountService){
+    $scope.user = AccountService.user;
+    $scope.edit = function (att, val){
+       console.log(att,val);
+        AccountService.editUser(att,val).then(function(data){
+            AccountService.user = data;
+            $scope.user = data;
+            console.log(data);
+        },function(err){
+          return "err";
+        });
+        return "succ";
+    }
 });

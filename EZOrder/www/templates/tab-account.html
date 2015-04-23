@@ -1,6 +1,6 @@
-<ion-view view-title="Account">
-  <ion-content>
-  	<form ng-submit="login()" ng-controller= "AccountCtrl">
+<ion-view view-title="Login">
+  <ion-content ng-controller= "LoginCtrl">
+  	<form ng-submit="login()" >
 	  	<div class="list list-inset">
 			<label class="item item-input">
 			    <span class="input-label">email</span>
@@ -14,7 +14,8 @@
 		</div>
 	</from>
 	<p>
-		{{msg}}
+		{{user}}
+		{{token}}
 	</p>
   </ion-content>
 </ion-view>
