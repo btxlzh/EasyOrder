@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['ionic'])
 
-.controller('ChatsCtrl', function($scope, Chats) {
+.controller('ChatsCtrl', function($scope, Chats,LocalStorage) {
   $scope.chats = Chats.all();
   $scope.remove = function(chat) {
     Chats.remove(chat);
@@ -34,6 +34,7 @@ angular.module('starter.controllers', ['ionic'])
   $scope.$on('$ionicView.beforeEnter', function(){
     AccountService.getUser().then(function(data){
         $scope.user=data;
+        console.log(data);
     },function(err){
         $ionicHistory.nextViewOptions({
             disableAnimate: true,
@@ -42,7 +43,6 @@ angular.module('starter.controllers', ['ionic'])
         $state.go('tab.login');
     })
   });
-  console.log('user'+$scope.user);
   $scope.logout = function(){
     AccountService.logout()
     .success(function(resp) {

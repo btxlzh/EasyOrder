@@ -95,12 +95,7 @@ angular.module('starter.services', [])
 
       }
       AccountFactory.loginWithToken = function(token){
-          return $http.get("http://localhost:1337/auth/loginWithToken?access_token="+token)
-          .then(
-                function(resp){
-                    return resp.data;
-                }
-          );
+          return 
       }
       AccountFactory.logout = function(){
           $ionicHistory.nextViewOptions({
@@ -127,14 +122,18 @@ angular.module('starter.services', [])
             console.log('No local token');
             d.reject('No local token');
           }
-          AccountFactory.loginWithToken(LocalStorage.getObj('EZ_LOCAL_TOKEN').token)
-          .then(function(data){
-            console.log('GET User by login with token');
-              if(data){
-                AccountFactory.setUser(data);
-              }
-              d.resolve(data);
-          })
+          $http.get("http://localhost:1337/auth/loginWithToken?access_token="+LocalStorage.getObj('EZ_LOCAL_TOKEN').token)
+          .then(
+                function(resp){
+                     console.log('GET User by login with token'+LocalStorage.getObj('EZ_LOCAL_TOKEN').token);
+                    AccountFactory.setUser(resp.data);
+                      d.resolve(resp.data);
+                },function (err){
+                    console.log('error token');
+                    LocalStorage.del('EZ_LOCAL_TOKEN');
+                     d.reject('Error local token');
+                }
+          );
         }
         return d.promise;
       }

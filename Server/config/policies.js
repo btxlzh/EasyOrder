@@ -35,6 +35,9 @@ module.exports.policies = {
   },
   UserController:{
     me:['sessionAuth'],
+  },
+  AuthController:{
+    loginWithToken:['hasjsonWebToken']
   }
   /***************************************************************************
   *                                                                          *
