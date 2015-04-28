@@ -4,15 +4,57 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-<ion-view view-title="{{restaurant.name}}">
+<ion-view view-title="<!-- {{restaurant.name}} -->Apolo Chinese Restaurant">
   <ion-content class="padding">
     
     <p>
-      <h2>{{restaurant.name}}</h2>
-        <h2>{{restaurant.type}}</h2>
-        <h2>{{restaurant.price}}</h2>
-        <h2>{{restaurant.description}}</h2>
-        <h2>{{restaurant.id}}</h2>
+      <h4>Basic Information</h4>
+      <div class="list card">
+        <a class="item item-icon-left" href="#">
+          <i class="icon ion-cash"></i>
+          Price
+          <span class="item-note">
+            $$$
+          </span>
+        </a>
+        
+        <a class="item item-icon-left" href="#">
+          <i class="icon ion-compose"></i>
+          Description
+        </a>
+        <a class="item item-body">
+          <p>
+            <!-- {{restaurant.description}} -->
+            This restaurant is very famous among Chinese student. It's fame doesn't come from delicious food, but it great location which just around the engineering quad.
+          </p>
+        </a>
+      </div>
+      <h4>Menu</h4>
+      <div class="list">
+        <div class="item item-divider">
+          <i class="icon ion-load-b"></i>
+          Noodle
+        </div>
+        <a class="item" href="#">
+          Pork rice noodle
+        </a>
+        <a class="item" href="#">
+          Fried noodle
+        </a>
+        <a class="item" href="#">
+          Beef stew noodle
+        </a>
+        <div class="item item-divider">
+          <i class="icon ion-load-b"></i>
+          Rice
+        </div>
+         <a class="item" href="#">
+          BBQ chicken on rice
+        </a>
+        <a class="item" href="#">
+          Eggs fried rice
+        </a>
+      </div>
     </p>
   </ion-content>
 </ion-view>
