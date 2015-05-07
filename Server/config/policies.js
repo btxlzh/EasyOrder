@@ -28,7 +28,6 @@ module.exports.policies = {
   
   '*': true,
   RestaurantController: {
-    getQRcode: ['hasjsonWebToken'],
     authSession : ['sessionAuth'],
     token  : ['hasjsonWebToken'],
 

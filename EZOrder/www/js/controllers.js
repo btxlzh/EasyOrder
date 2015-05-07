@@ -1,4 +1,4 @@
-angular.module('starter.controllers', ['ionic'])
+angular.module('starter.controllers',  ['ionic', 'ngCordova'])
 
 .controller('ChatsCtrl', function($scope, Chats,LocalStorage) {
   $scope.chats = Chats.all();
@@ -64,20 +64,16 @@ angular.module('starter.controllers', ['ionic'])
 .controller("SearchCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,DataService,ErrorService) {
 
      // For JSON responses, resp.data contains the result
-    DataService.getAllRestaurants()
-    .success(function(resp){
-        $scope.restaurants = resp;
-    })
-    .error(function(error){
-         ErrorService.popUp("unable to get restaurants data from server");
-    });
+
+    
    
     $scope.scanBarcode = function() {
         $cordovaBarcodeScanner.scan().then(function(imageData) {
-            var restaurantID= DataService.getRestaurantByQRCode(imageData.text);
-            state.go('tab.restaurant-detail',{'id':restaurantID});
+            //var restaurantID= DataService.getRestaurantByQRCode(imageData.text);
+           // state.go('tab.restaurant-detail',{'id':restaurantID});
+             alert(imageData.text);
         }, function(error) {
-             ErrorService.popUp("Wrong Barcode");
+             alert("error");
         });
     };
  
