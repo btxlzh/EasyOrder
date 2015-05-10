@@ -46,6 +46,7 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
     'get /user/me': 'UserController.me',
-    
+    'get /Restaurant/:id/all' : 'RestaurantController.getDetailAll',
+    'get /Menu/:id/all' : 'MenuController.getDetail'
 
 };

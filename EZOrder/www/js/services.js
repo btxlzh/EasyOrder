@@ -49,7 +49,6 @@ angular.module('starter.services', [])
   };
 })
 .factory('DataService',function($http){
-
       function getUrlVars(Url) {
           var vars = {};
           var parts = url.replace(/[?&]+([^=&]+)=([^&]*)/gi,    
@@ -64,7 +63,43 @@ angular.module('starter.services', [])
           return $http.get('http://localhost:1337/restaurant/');
       } 
       dataFactory.getRestaurant = function(id){
-          return $http.get('http://localhost:1337/restaurant/'+id); 
+        return $http.get('http://localhost:1337/restaurant/'+id)
+            .then(
+                  function(resp){
+                    console.log(resp.data);
+                    dataFactory.restaurant = resp.data;
+                    return resp.data;
+                  },function (err){
+                    return err;
+                  }
+            );
+      }
+
+      dataFactory.getMenu = function(id){
+        return $http.get('http://localhost:1337/menu/'+id+'/all')
+            .then(
+                  function(resp){
+                    console.log(resp.data);
+                    dataFactory.menu = resp.data;
+                    return resp.data;
+                  },function (err){
+                    console.log(err);
+                    console.log(dataFactory.restaurant.menu);
+                    return err;
+                  }
+            );
+      }
+       dataFactory.getDish = function(id){
+        return $http.get('http://localhost:1337/dish/'+id)
+            .then(
+                  function(resp){
+                    console.log(resp.data);
+                    return resp.data;
+                  },function (err){
+                    console.log(err);
+                    return err;
+                  }
+            );
       }
       dataFactory.getRestaurantByQRCode = function(Image_data){
           return getUrlVars(Image_data.te)["id"];
@@ -121,19 +156,20 @@ angular.module('starter.services', [])
           if(!LocalStorage.exist('EZ_LOCAL_TOKEN')){
             console.log('No local token');
             d.reject('No local token');
+          }else{
+            $http.get("http://localhost:1337/auth/loginWithToken?access_token="+LocalStorage.getObj('EZ_LOCAL_TOKEN').token)
+            .then(
+                  function(resp){
+                       console.log('GET User by login with token'+LocalStorage.getObj('EZ_LOCAL_TOKEN').token);
+                      AccountFactory.setUser(resp.data); 
+                        d.resolve(resp.data);
+                  },function (err){
+                      console.log('error token');
+                      LocalStorage.del('EZ_LOCAL_TOKEN');
+                       d.reject('Error local token');
+                  }
+            );
           }
-          $http.get("http://localhost:1337/auth/loginWithToken?access_token="+LocalStorage.getObj('EZ_LOCAL_TOKEN').token)
-          .then(
-                function(resp){
-                     console.log('GET User by login with token'+LocalStorage.getObj('EZ_LOCAL_TOKEN').token);
-                    AccountFactory.setUser(resp.data);
-                      d.resolve(resp.data);
-                },function (err){
-                    console.log('error token');
-                    LocalStorage.del('EZ_LOCAL_TOKEN');
-                     d.reject('Error local token');
-                }
-          );
         }
         return d.promise;
       }

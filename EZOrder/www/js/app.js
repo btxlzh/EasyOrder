@@ -49,14 +49,54 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
       }
     }
   })
- .state('tab.restaurant-detail', {
+ .state('tab.restaurant', {
     url: '/restaurant/:id',
+    
     views: {
        'tab-search': {
-          templateUrl: 'templates/restaurant-detail.html',
-          controller: 'RestaurantDetailCtrl'
+          templateUrl: 'templates/restaurant.html',
+          controller: 'RestaurantCtrl',
+          
+          }
+    },
+    resolve : {
+        restaurant_data : function(DataService,$stateParams) {
+                return DataService.getRestaurant($stateParams.id);
         }
     }
+    
+  })
+  .state('tab.menu', {
+    url: '/menu/:id',
+    
+    views: {
+       'tab-search': {
+            templateUrl: 'templates/restaurant-menu.html',
+            controller: 'RestaurantMenuCtrl', 
+          }
+    },
+    resolve : {
+        menu_data : function(DataService,$stateParams) {
+                return DataService.getMenu($stateParams.id);
+        }
+    }
+    
+  })
+  .state('tab.dish', {
+    url: '/dish/:id',
+    
+    views: {
+       'tab-search': {
+            templateUrl: 'templates/restaurant-dish.html',
+            controller: 'RestaurantDishCtrl', 
+          }
+    },
+    resolve : {
+        dish_data : function(DataService,$stateParams) {
+                return DataService.getDish($stateParams.id);
+        }
+    }
+    
   })
   .state('tab.chats', {
       url: '/chats',

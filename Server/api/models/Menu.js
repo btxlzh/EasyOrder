@@ -8,12 +8,15 @@
 module.exports = {
 
   attributes: {
+    name : {
+      type : 'string'
+    },
   	dishes : {
   		collection: 'Dish',
-        via: 'owner'
+      via: 'owner'
   	},
   	owner: {
-      collection: 'Restaurant',
+      model:  'Restaurant',
       via: 'menu'
     }
   }

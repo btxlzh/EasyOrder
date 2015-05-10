@@ -51,22 +51,32 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
    });
   }
 })
-.controller("RestaurantDetailCtrl",function($scope,$http, $stateParams,DataService,ErrorService) {
-    DataService.getRestaurant($stateParams.id)
-    .success(function(data){
-        $scope.restaurant = data;
-        console.log(data);
-    })
-    .error(function(error){
-        ErrorService.popUp("unable to get restaurant data from server");
-    });
+.controller("RestaurantCtrl",function($scope,$http, restaurant_data,ErrorService) {
+  $scope.restaurant = restaurant_data;
+  console.log(restaurant_data);
+
+})
+.controller("RestaurantMenuCtrl",function($scope,$http, menu_data,ErrorService) {
+  $scope.menu = menu_data;
+
+})
+.controller("RestaurantDishCtrl",function($scope,$http, dish_data,ErrorService) {
+  $scope.dish = dish_data;
+
 })
 .controller("SearchCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,DataService,ErrorService) {
 
      // For JSON responses, resp.data contains the result
 
-    
-   
+    $scope.$on('$ionicView.beforeEnter', function(){
+      DataService.getAllRestaurants()
+      .success(function(resp){
+          $scope.restaurants = resp;
+      })
+      .error(function(error){
+           ErrorService.popUp("unable to get restaurants data from server");
+      });
+    });
     $scope.scanBarcode = function() {
         $cordovaBarcodeScanner.scan().then(function(imageData) {
             //var restaurantID= DataService.getRestaurantByQRCode(imageData.text);
