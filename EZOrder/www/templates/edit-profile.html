@@ -1,18 +1,70 @@
-<ion-view view-title="Me">
-  <ion-content ng-controller="ProfileCtrl">
-	
+ <ion-view view-title="Me">
+ <ion-content padding="true" ng-controller="ProfileCtrl">
 
-  			<h2>{{user.nickName}}</h2>
-          <input type="text" placeholder="Change NickName" ng-model="newNickName">
-          
-        <button class="button button-small button-clear" ng-click="edit('nickName',newNickName)">
-            Submit
-          </button>
+ <div id="profile-bg"></div>
+ <div id="content">
+ 	<div id="profile-info" ng-click ='changeProfilePicture()'>
+ 		<img id="profile-image" src={{user.photoUrl}}>
+ 		{{user}}
+ 		<h3 id="profile-name">{{user.nickName}}</h3>
+ 	</div>
+ </div>
+</div>
+<ion-list>
+	<ion-item ng-click='openNameModal(0)'>
+		Name:   <div class="post-time">{{user.nickName}}</div>
+	</ion-item>
+	<ion-item ng-click='openNameModal(1)'>
+	Phone Number: <div class="post-time">{{user.phoneNumber}}</div>
+	</ion-item>
+</ion-list>
+</div>
 
-
-
-  </ion-content>
+</ion-content>
 </ion-view>
 
+<!-- script for changeNameModal -->
+<script id="changeNameModal.html" type="text/ng-template">
+	<div class="modal">
+		<ion-header-bar>
+		<h1 class="title">Change Name</h1>
+		</ion-header-bar>
 
+		<ion-content>
+			<div style= "padding-left:10px;padding-right:10px;">
+				<div class="list list-inset">
+					<label class="item item-input">
+						<input type="text" placeholder="First Name" ng-model="newName">
+					</label>
+				</div>
+				<div class="button-bar " >
+					<button class="button button-light" ng-click="finishChangeName(newName)">Done</button>
+					<button class="button button-light" ng-click="closeNameModal(0)">Cancel</button>
+				</div>
+			</div>
+		</ion-content>
+	</div>
+</script>
 
+<!-- script for changePhoneModal -->
+<script id="changePhoneModal.html" type="text/ng-template">
+	<div class="modal">
+		<ion-header-bar>
+		<h1 class="title">Change Phone Number</h1>
+		</ion-header-bar>
+
+		<ion-content>
+			<div style= "padding-left:10px;padding-right:10px;">
+				<div class="list list-inset">
+					<label class="item item-input">
+						<input type="tel" placeholder="phone number" ng-model="newPhone" >
+					</label>
+				</div>
+				<div class="button-bar " >
+					<button class="button button-light" ng-click="finishChangePhone(newPhone)">Done</button>
+					<button class="button button-light" ng-click="closeNameModal(1)">Cancel</button>
+				</div>
+			</div>
+		</ion-content>
+	</div>
+</script>

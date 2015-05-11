@@ -70,6 +70,9 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
 .controller("SearchCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,DataService,ErrorService) {
 
      // For JSON responses, resp.data contains the result
+     // $scope.restaurants = [];
+     // var one = {id:1, name: 'apoplo', type: 'chinese'};
+     // $scope.restaurants.push(one);
 
     $scope.$on('$ionicView.beforeEnter', function(){
       DataService.getAllRestaurants()
@@ -91,8 +94,20 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
     };
  
 })
-.controller("ProfileCtrl",function($scope,$http,$state,AccountService){
-    $scope.user = AccountService.user;
+.controller("ProfileCtrl",function($scope,$http,$state,AccountService,$ionicModal,$ionicHistory){
+    $scope.$on('$ionicView.beforeEnter', function(){
+    AccountService.getUser().then(function(data){
+        $scope.user=data;
+        console.log(data);
+    },function(err){
+        $ionicHistory.nextViewOptions({
+            disableAnimate: true,
+            disableBack: true
+          });
+        $state.go('tab.login');
+    })
+  });
+    // {name:'xuke',phone:'000-000-0000'}
     $scope.edit = function (att, val){
        console.log(att,val);
         AccountService.editUser(att,val).then(function(data){
@@ -104,4 +119,46 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
         });
         return "succ";
     }
+    $ionicModal.fromTemplateUrl('changeNameModal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      $scope.modalName = modal
+    })  
+    $ionicModal.fromTemplateUrl('changePhoneModal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      $scope.modalPhone = modal
+    })  
+    $scope.finishChangeName = function(newName){
+      $scope.user.nickName = newName;
+      AccountService.editUser('nickName',newName);
+      $scope.modalName.hide();
+    }
+    $scope.finishChangePhone = function(newPhone){
+      $scope.user.phoneNumber= newPhone;
+      AccountService.editUser('phoneNumber',newPhone);
+       $scope.modalPhone.hide();
+    }
+    $scope.openNameModal = function(mode) {
+      if(mode == 0){
+        $scope.modalName.show()
+      }else{
+          $scope.modalPhone.show()
+      }
+    }
+
+    $scope.closeNameModal = function(mode) {
+      if(mode == 0){
+        $scope.modalName.hide();
+      }else{
+         $scope.modalPhone.hide()
+      }
+    };
+
+    $scope.$on('$destroy', function() {
+      $scope.modalName.remove();
+      $scope.modalPhone.remove();
+    });
 });
