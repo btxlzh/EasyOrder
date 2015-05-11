@@ -47,6 +47,9 @@ module.exports.routes = {
   ***************************************************************************/
     'get /user/me': 'UserController.me',
     'get /Restaurant/:id/all' : 'RestaurantController.getDetailAll',
-    'get /Menu/:id/all' : 'MenuController.getDetail'
+    'get /Menu/:id/all' : 'MenuController.getDetail',
+    'get /__getcookie': function(req, res, next){
+        res.send('_sailsIoJSConnect();');
+    },
 
 };

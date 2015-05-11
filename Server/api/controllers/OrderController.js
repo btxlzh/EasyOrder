@@ -11,9 +11,17 @@ module.exports = {
 		var data_from_client = req.params.all();
 		if(req.isSocket){
 			// subscribe client to model changes 
-			Order.watch(req.socket);
+			Order.watch(req);
 			console.log( 'User subscribed to ' + req.socket.id );
+			return res.send("succ");
 		}
-	}	
+	},
+	createPub:function(req,res){
+		Order.create()
+				.exec(function(error){
+					console.log("publish");
+					Order.publishCreate({id: 10, message : "ata_from_client.message"});
+				}); 
+	}
 };
 

@@ -67,7 +67,7 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
   }
 
 })
-.controller("SearchCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,DataService,ErrorService,socket) {
+.controller("SearchCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,DataService,ErrorService) {
 
      // For JSON responses, resp.data contains the result
 
@@ -81,17 +81,27 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
     //     });
     // };
     $scope.baseUrl = 'http://localhost:1337';
+   
+    
     $scope.listen = function(){
-      socket.emit('/Order/listenOrder');
-    }
-    $scope.orders=[];
-    socket.on('Order',function(obj){
-        if(obj.verb === 'created'){
-          $log.info(obj)
-          $scope.orders.push(obj.data);
-          $scope.$digest();
-        }
-      });
+      io.socket.get('/Order/listenOrder',function serverResponded (body, JWR) {
+
+          // JWR ==> "JSON WebSocket Response"
+          console.log('Sails responded with: ', body);
+          console.log('with headers: ', JWR.headers);
+          console.log('and with status code: ', JWR.statusCode);
+
+        
+
+          // first argument `body` === `JWR.body`
+          // (just for convenience, and to maintain familiar usage, a la `JQuery.get()`)
+        });
+      }
+    io.socket.on('order', function onServerSentEvent (msg) {
+              console.log(msg);
+              $scope.$digest();
+          });
+    
  
 })
 .controller("ProfileCtrl",function($scope,$http,$state,AccountService){
