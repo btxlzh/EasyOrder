@@ -11,10 +11,9 @@ module.exports = {
     name  : { type: 'string' },
     city  : { type: 'string' },
     email : { type: 'email',  unique: true },
-    menu: {
-      collection: 'Menu',
-      via: 'owner',
-      dominant: true
+    menu : {
+      model: 'Menu',
+      via: 'owner'
     }
   }
 };

@@ -6,9 +6,9 @@
  */
 var qr = require('qr-image');
 module.exports = {
-	   getAll: function (req, res) {
-		var xx;
-		Restaurant.find().exec(function (err, found) {return res.send(found);});
+	  getAll: function (req, res) {
+		  var xx;
+		  Restaurant.find().exec(function (err, found) {return res.send(found);});
   	},
   	getQRcode: function (req, res){
   		id = req.param('id');
@@ -24,5 +24,13 @@ module.exports = {
     token: function (req, res) {
       return res.send(" token got it");
     },
+    getDetailAll:function(req,res){
+      thisId = req.param('id');
+      Restaurant.findOne({id:thisId})
+      .populateAll()
+      .exec(function findOneCB(err,found){
+        return res.send(found);
+      });
+    }
 };
 

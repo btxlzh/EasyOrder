@@ -1,55 +1,6 @@
 angular.module('starter.services', [])
 
-.factory('Chats', function() {
-  // Might use a resource here that returns a JSON array
-
-  // Some fake testing data
-  var chats = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'https://avatars3.githubusercontent.com/u/11214?v=3&s=460'
-  }, {
-    id: 2,
-    name: 'Andrew Jostlin',
-    lastText: 'Did you get the ice cream?',
-    face: 'https://pbs.twimg.com/profile_images/491274378181488640/Tti0fFVJ.jpeg'
-  }, {
-    id: 3,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'https://pbs.twimg.com/profile_images/479090794058379264/84TKj_qa.jpeg'
-  }, {
-    id: 4,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'https://pbs.twimg.com/profile_images/491995398135767040/ie2Z_V6e.jpeg'
-  }];
-
-  return {
-    all: function() {
-      return chats;
-    },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
-    },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
-        }
-      }
-      return null;
-    }
-  };
-})
-.factory('DataService',function($http){
-
+.factory('DataService',function($http,AccountService){
       function getUrlVars(Url) {
           var vars = {};
           var parts = url.replace(/[?&]+([^=&]+)=([^&]*)/gi,    
@@ -60,14 +11,98 @@ angular.module('starter.services', [])
       }
 
       var dataFactory = {};
+      dataFactory.cart=[];
       dataFactory.getAllRestaurants = function(){
           return $http.get('http://localhost:1337/restaurant/');
       } 
       dataFactory.getRestaurant = function(id){
-          return $http.get('http://localhost:1337/restaurant/'+id); 
+        return $http.get('http://localhost:1337/restaurant/'+id)
+            .then(
+                  function(resp){
+                    console.log(resp.data);
+                    dataFactory.restaurant = resp.data;
+                    return resp.data;
+                  },function (err){
+                    return err;
+                  }
+            );
+      }
+
+      dataFactory.getMenu = function(id){
+        return $http.get('http://localhost:1337/menu/'+id+'/all')
+            .then(
+                  function(resp){
+                    console.log(resp.data);
+                    dataFactory.menu = resp.data;
+                    return resp.data;
+                  },function (err){
+                    console.log(err);
+                    console.log(dataFactory.restaurant.menu);
+                    return err;
+                  }
+            );
+      }
+       dataFactory.getDish = function(id){
+        return $http.get('http://localhost:1337/dish/'+id)
+            .then(
+                  function(resp){
+                    console.log(resp.data);
+                    return resp.data;
+                  },function (err){
+                    console.log(err);
+                    return err;
+                  }
+            );
       }
       dataFactory.getRestaurantByQRCode = function(Image_data){
           return getUrlVars(Image_data.te)["id"];
+      }
+      dataFactory.dishes=[];
+      dataFactory.dish_map={};
+      dataFactory.addToCart=function(dish,num){
+
+        if(dish.id in dataFactory.dish_map){
+              index =dataFactory.dish_map[dish.id];
+          dataFactory.dishes[index].num+=num;
+                // console.log("add exist");
+                //  console.log(Cart.dishes);
+
+        }else {
+
+          dish.num=num;
+          //push new
+          dataFactory.dish_map[dish.id]=dataFactory.dishes.length;
+          dataFactory.dishes.push(dish);
+           // console.log("new add");
+           // console.log(Cart.dishes);
+           // console.log(Cart.dish_map);
+        }
+        return ;
+      }
+      dataFactory.getCart=function(){
+        return dataFactory.dishes;
+      }
+
+      dataFactory.clearCart =function(){
+        dataFactory.dishes.length=0;
+        return ;
+      }
+      dataFactory.checkout = function(){
+        var requestData={};
+        requestData.user = AccountService.user.id;
+        requestData.orderDetail = dataFactory.dishes;
+        requestData.restaurant = dataFactory.restaurant.id;
+        return $http.post('http://localhost:1337/Order/create',requestData, {
+            headers: { 'Content-Type': 'application/json'}
+        }).then(
+                      function(resp){
+                        console.log(resp.data);
+                        return resp.data;
+                      },function (err){
+                        console.log(err);
+                        return err;
+                      }
+                );
       }
       return dataFactory;
   })
@@ -84,6 +119,7 @@ angular.module('starter.services', [])
                   return $http.get("http://localhost:1337/user/jwt")
                   .then( 
                         function(respToken){
+                          AccountFactory.setUser(respUser.data); 
                           return {
                               user:respUser.data,
                               token:respToken.data
@@ -121,19 +157,20 @@ angular.module('starter.services', [])
           if(!LocalStorage.exist('EZ_LOCAL_TOKEN')){
             console.log('No local token');
             d.reject('No local token');
+          }else{
+            $http.get("http://localhost:1337/auth/loginWithToken?access_token="+LocalStorage.getObj('EZ_LOCAL_TOKEN').token)
+            .then(
+                  function(resp){
+                       console.log('GET User by login with token'+LocalStorage.getObj('EZ_LOCAL_TOKEN').token);
+                      AccountFactory.setUser(resp.data); 
+                        d.resolve(resp.data);
+                  },function (err){
+                      console.log('error token');
+                      LocalStorage.del('EZ_LOCAL_TOKEN');
+                       d.reject('Error local token');
+                  }
+            );
           }
-          $http.get("http://localhost:1337/auth/loginWithToken?access_token="+LocalStorage.getObj('EZ_LOCAL_TOKEN').token)
-          .then(
-                function(resp){
-                     console.log('GET User by login with token'+LocalStorage.getObj('EZ_LOCAL_TOKEN').token);
-                    AccountFactory.setUser(resp.data);
-                      d.resolve(resp.data);
-                },function (err){
-                    console.log('error token');
-                    LocalStorage.del('EZ_LOCAL_TOKEN');
-                     d.reject('Error local token');
-                }
-          );
         }
         return d.promise;
       }
