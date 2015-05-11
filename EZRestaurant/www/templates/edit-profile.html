@@ -1,0 +1,18 @@
+<ion-view view-title="Me">
+  <ion-content ng-controller="ProfileCtrl">
+	
+
+  			<h2>{{user.nickName}}</h2>
+          <input type="text" placeholder="Change NickName" ng-model="newNickName">
+          
+        <button class="button button-small button-clear" ng-click="edit('nickName',newNickName)">
+            Submit
+          </button>
+
+
+
+  </ion-content>
+</ion-view>
+
+
+

@@ -1,9 +1,9 @@
 angular.module('starter.controllers',  ['ionic', 'ngCordova'])
 
-.controller('ChatsCtrl', function($scope, Chats,LocalStorage) {
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
+.controller('CartCtrl', function($scope, DataService,LocalStorage) {
+  $scope.dishes = DataService.dishes;
+  $scope.checkout=function(){
+    DataService.checkout();
   }
 })
 
@@ -60,8 +60,11 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
   $scope.menu = menu_data;
 
 })
-.controller("RestaurantDishCtrl",function($scope,$http, dish_data,ErrorService) {
+.controller("RestaurantDishCtrl",function($scope,$http, dish_data,ErrorService,DataService) {
   $scope.dish = dish_data;
+  $scope.addToCart=function(dish,num){
+    DataService.addToCart(dish,num);
+  }
 
 })
 .controller("SearchCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,DataService,ErrorService) {
