@@ -16,9 +16,13 @@
   },
   "cordovaPlugins": [
     "org.apache.cordova.device",
-    "com.ionic.keyboard"
+    "com.ionic.keyboard",
+    "org.apache.cordova.file-transfer",
+    "org.apache.cordova.camera",
+    "org.apache.cordova.file"
   ],
   "cordovaPlatforms": [
-    "ios"
+    "ios",
+    "android"
   ]
 }

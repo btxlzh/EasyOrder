@@ -13,17 +13,20 @@ upload: function  (req, res) {
 			//	Call to /upload via GET is error
 
 		var uploadFile = req.file('uploadFile');
-		console.log(uploadFile);
+		UID = req.param('id');
+		var data= req.params.all();
+		console.log(data);
+		var fn = req.file('uploadFile')._files[0].stream.filename;
+		 var extension = fn.split('.').pop();
 
-	    uploadFile.upload(function onUploadComplete (err, files) {				
+	    uploadFile.upload({dirname: '../../assets/images', saveAs:UID+"_profile."+extension},function onUploadComplete (err, files) {				
 	    //	Files will be uploaded to .tmp/uploads
 	    																		
 	    	if (err) return res.serverError(err);								
 	    	//	IF ERROR Return and send 500 error with error
-			
-	    	console.log(files);
 	    	res.json({status:200,file:files});
 	    });
+
 }
 	
 };

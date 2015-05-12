@@ -15,9 +15,8 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
   
   $scope.postData={};
   $scope.login = function(){
-    //$http.get("http://localhost:1337/auth/login?email="+$scope.postData.email+"&password="+$scope.postData.password)
-    AccountService.login($scope.postData).then(function(data){
-      console.log(data);
+AccountService.login($scope.postData).then(function(data){      
+  console.log(data);
       var promise1 = AccountService.setUser(data.user);
       var promise2 = LocalStorage.setObj('EZ_LOCAL_TOKEN',data.token);
       $q.all([promise1,promise2]).then(function(){
@@ -94,7 +93,7 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
     };
  
 })
-.controller("ProfileCtrl",function($scope,$http,$state,AccountService,$ionicModal,$ionicHistory){
+.controller("ProfileCtrl",function($scope,$http,$state,AccountService,$ionicModal,$ionicHistory,uploadFile,$cordovaCamera, $cordovaImagePicker,$timeout, $cordovaFile){
     $scope.$on('$ionicView.beforeEnter', function(){
     AccountService.getUser().then(function(data){
         $scope.user=data;
@@ -107,30 +106,114 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
         $state.go('tab.login');
     })
   });
-    // {name:'xuke',phone:'000-000-0000'}
-    $scope.edit = function (att, val){
-       console.log(att,val);
-        AccountService.editUser(att,val).then(function(data){
-            AccountService.user = data;
-            $scope.user = data;
-            console.log(data);
-        },function(err){
-          return "err";
+    var serverURL = "http://localhost:1337/file/upload";
+    $scope.takePicture = function() {
+      var options = {
+        quality: 50,
+        destinationType: Camera.DestinationType.DATA_URL,
+        sourceType: Camera.PictureSourceType.CAMERA,
+        allowEdit: true,
+        encodingType: Camera.EncodingType.JPEG,
+        targetWidth: 100,
+        targetHeight: 100,
+        popoverOptions: CameraPopoverOptions,
+        saveToPhotoAlbum: false
+      };
+
+      $cordovaCamera.getPicture(options).then(function(imageData) {
+        var image = document.getElementById('profile-image');
+        image.src = "data:image/jpeg;base64," + imageData;
+        alert(image.src);
+      }, function(err) {
+        // error
+      });
+  };
+
+  $scope.choose = function() { 
+    var options = {
+      quality: 50,
+      destinationType: Camera.DestinationType.FILE_URI,
+      sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+    };
+    $cordovaCamera.getPicture(options).then(
+    function(imageURI) {
+      window.resolveLocalFileSystemURI(imageURI, function(fileEntry) {
+        $scope.picData = fileEntry.nativeURL;
+        $scope.ftLoad = true;
+        //var image = document.getElementById('myImage');
+        $scope.user.photoUrl = fileEntry.nativeURL;
+        upload(fileEntry.nativeURL);
         });
-        return "succ";
-    }
+      $ionicLoading.show({template: 'Loading', duration:500});
+    },
+    function(err){
+      $ionicLoading.show({template: 'Error', duration:500});
+    })
+  };
+    
+  upload = function(fileURL){
+    var win = function (r) {
+          console.log("Code = " + r.responseCode);
+          console.log("Response = " + r.response);
+          console.log("Sent = " + r.bytesSent);
+          $scope.modalPic.hide();
+      }
+
+      var fail = function (error) {
+          alert("An error has occurred: Code = " + error.code);
+          console.log("upload error source " + error.source);
+          console.log("upload error target " + error.target);
+          $scope.modalPic.hide();
+      }
+      var options = new FileUploadOptions();
+      options.fileKey = "uploadFile";
+      options.fileName = fileURL.substr(fileURL.lastIndexOf('/') + 1);
+      options.mimeType = "text/plain";
+     
+      var params = {};
+      params.id = "1";
+
+      options.params = params;
+
+      var ft = new FileTransfer();
+      ft.onprogress = function(progressEvent) {
+          if (progressEvent.lengthComputable) {
+            loadingStatus.setPercentage(progressEvent.loaded / progressEvent.total);
+          } else {
+            loadingStatus.increment();
+          }
+      };
+      ft.upload(fileURL, encodeURI(serverURL), win, fail, options);
+  }
+
+
     $ionicModal.fromTemplateUrl('changeNameModal.html', {
       scope: $scope,
       animation: 'slide-in-up'
     }).then(function(modal) {
       $scope.modalName = modal
     })  
+
     $ionicModal.fromTemplateUrl('changePhoneModal.html', {
       scope: $scope,
       animation: 'slide-in-up'
     }).then(function(modal) {
       $scope.modalPhone = modal
     })  
+    $ionicModal.fromTemplateUrl('changePicModal.html', {
+      scope: $scope,
+    }).then(function(modal) {
+      $scope.modalPic = modal
+    })  
+    $ionicModal.fromTemplateUrl('imageModal.html', {
+      scope: $scope,
+    }).then(function(modal) {
+      $scope.modalImage = modal
+    })  
+    $scope.showImage = function() {
+      $scope.imageSrc = $scope.user.photoUrl;
+      $scope.openModal(3);
+    }
     $scope.finishChangeName = function(newName){
       $scope.user.nickName = newName;
       AccountService.editUser('nickName',newName);
@@ -141,24 +224,43 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
       AccountService.editUser('phoneNumber',newPhone);
        $scope.modalPhone.hide();
     }
-    $scope.openNameModal = function(mode) {
-      if(mode == 0){
-        $scope.modalName.show()
-      }else{
-          $scope.modalPhone.show()
-      }
+    $scope.openModal = function(mode) {
+        switch(mode) {
+          case 0: 
+           $scope.modalName.show();
+           break;
+          case 1:
+            $scope.modalPhone.show();
+            break;
+            case 2:
+            $scope.modalPic.show();
+            break;
+          case 3:
+          $scope.modalImage.show();
+            break;
+        }
     }
-
-    $scope.closeNameModal = function(mode) {
-      if(mode == 0){
-        $scope.modalName.hide();
-      }else{
-         $scope.modalPhone.hide()
-      }
+    $scope.closeModal = function(mode) {
+        switch(mode) {
+          case 0: 
+           $scope.modalName.hide();
+           break;
+          case 1:
+            $scope.modalPhone.hide();
+            break;
+            case 2:
+          $scope.modalPic.hide();
+            break;
+          case 3:
+          $scope.modalImage.hide();
+            break;
+        }
     };
 
     $scope.$on('$destroy', function() {
       $scope.modalName.remove();
       $scope.modalPhone.remove();
+      $scope.modalPic.remove();
+      $scope.modalImage.remove();
     });
-});
+}); 

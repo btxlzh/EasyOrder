@@ -35,7 +35,9 @@ module.exports.routes = {
   '/': {
     view: 'homepage'
   },
-
+'/upload-file':{
+    view: 'uploadfile'  // view 'uploadfile' in views directory will loaded automatically
+  },
   /***************************************************************************
   *                                                                          *
   * Custom routes here...                                                    *
@@ -51,5 +53,5 @@ module.exports.routes = {
     'get /__getcookie': function(req, res, next){
         res.send('_sailsIoJSConnect();');
     },
-
+    
 };
