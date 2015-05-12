@@ -22,8 +22,11 @@ module.exports = {
   	photoUrl:{
   		type: 'string',
   		defaultsTo: sails.config.EZconf.baseURL+'images/defaultPhoto.jpg'
-  	}
-    
+  	},
+    restaurant:{
+      model:  'Restaurant',
+      via : 'owner'
+    }
   }),
   
   beforeCreate: require('waterlock').models.user.beforeCreate,

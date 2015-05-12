@@ -13,7 +13,7 @@ module.exports = {
   	getQRcode: function (req, res){
   		id = req.param('id');
       console.log("getQRcode");
-  		var text ='http://localhost:1337/restaurant/?id='+ id;
+  		var text =sails.config.EZconf.baseURL+'restaurant/?id='+ id;
         var img = qr.image(text);
         res.writeHead(200, {'Content-Type': 'image/png'});
         img.pipe(res);	
@@ -31,6 +31,22 @@ module.exports = {
       .exec(function findOneCB(err,found){
         return res.send(found);
       });
+    },
+    createRestaurant:function(req,res){
+      var owner = req.param('owner');
+      Restaurant.create({owner:owner}).exec(function createCB(err,created_restaurant){
+          Menu.create({owner:created_restaurant.id}).exec(function createCB(err,created_menu){
+            User.update({id:owner},{restaurant:created_restaurant.id}).exec(function updateCB(err,updated_user){
+              Restaurant.update({id:created_restaurant.id},{menu:created_menu.id}).exec(function updateCB(err,updated){
+                return res.send({user:updated_user[0],restaurant:updated[0]});
+              });
+            });
+            
+          });
+      });
+    },
+    updateRestaurant:function(req,res){
+
     }
 };
 

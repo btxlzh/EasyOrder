@@ -9,11 +9,14 @@ module.exports = {
 
   attributes: {
     name  : { type: 'string' },
-    city  : { type: 'string' },
-    email : { type: 'email',  unique: true },
+    description: {type: 'string'},
     menu : {
       model: 'Menu',
       via: 'owner'
+    },
+    owner :{
+    	model: 'User',
+    	via:'restaurant'
     }
   }
 };
