@@ -11,6 +11,6 @@
 module.exports = require('waterlock').actions.user({
     me: function(req, res){
     	console.log(req.session.user);
-     	res.send(req.session.user);
-    }
+     	return res.send(req.session.user);
+    },
 });

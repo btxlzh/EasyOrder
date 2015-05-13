@@ -15,49 +15,54 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
   
   $scope.postData={};
   $scope.login = function(){
-    //$http.get("http://localhost:1337/auth/login?email="+$scope.postData.email+"&password="+$scope.postData.password)
-    AccountService.login($scope.postData).then(function(data){
+      AccountService.login($scope.postData).then(function(data){
       console.log(data);
-      var promise1 = AccountService.setUser(data.user);
-      var promise2 = LocalStorage.setObj('EZ_LOCAL_TOKEN',data.token);
-      $q.all([promise1,promise2]).then(function(){
-          $state.go('tab.account');
-      });
-    },function(err){
-        ErrorService.popUp("WRONG email OR password!");
-    })
+        $state.go('tab.restaurant');
+      },function(err){
+          ErrorService.popUp("WRONG email OR password!");
+      })
     return ;
   }
 })
-.controller('AccountCtrl', function($scope,$http,$state,$ionicHistory,AccountService,LocalStorage) {
+.controller('RestaurantCtrl', function($scope,$http,$state,$ionicHistory,AccountService,LocalStorage) {
   
   $scope.$on('$ionicView.beforeEnter', function(){
     AccountService.getUser().then(function(data){
-        $scope.user=data;
-        console.log(data);
+        $scope.restaurant = data;
     },function(err){
         $ionicHistory.nextViewOptions({
             disableAnimate: true,
             disableBack: true
           });
-        $state.go('tab.login');
+        $state.go('login');
     })
   });
   $scope.logout = function(){
     AccountService.logout()
     .success(function(resp) {
-        $state.go('tab.login');
+        $state.go('login');
         // For JSON responses, resp.data contains the result
    });
-  }
-})
-.controller("RestaurantCtrl",function($scope,$http, restaurant_data,ErrorService) {
-  $scope.restaurant = restaurant_data;
-  console.log(restaurant_data);
 
+
+}
 })
-.controller("RestaurantMenuCtrl",function($scope,$http, menu_data,ErrorService) {
+
+.controller("RestaurantMenuCtrl",function($scope,$http,menu_data,ErrorService,AccountService) {
   $scope.menu = menu_data;
+  $scope.listCanSwipe=true;
+  $scope.add=function(){
+    AccountService.createDish(AccountService.menu.id).then(function callback(data){
+      console.log(data);
+      $scope.menu.dishes.push(data);
+    })
+  }
+  $scope.delete=function(index){
+    
+    AccountService.deleteDish($scope.menu.dishes[index].id).then(function callback(data){
+      $scope.menu.dishes.splice(index, 1);
+    })
+  }
 
 })
 .controller("RestaurantDishCtrl",function($scope,$http, dish_data,ErrorService,DataService) {
@@ -67,7 +72,14 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
   }
 
 })
-.controller("SearchCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,DataService,ErrorService) {
+.controller("RestaurantEditCtrl",function($scope,$http, dish_data,ErrorService,AccountService) {
+  
+  $scope.edit=function(){
+    AccountService.editRestaurant($scope.postData);
+  }
+
+})
+.controller("OrderCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,DataService,ErrorService) {
 
      // For JSON responses, resp.data contains the result
 
@@ -82,7 +94,7 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
     // };
     $scope.baseUrl = 'http://localhost:1337';
    
-    
+    $scope.orders=[];
     $scope.listen = function(){
       io.socket.get('/Order/listenOrder',function serverResponded (body, JWR) {
 
@@ -90,17 +102,16 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
           console.log('Sails responded with: ', body);
           console.log('with headers: ', JWR.headers);
           console.log('and with status code: ', JWR.statusCode);
-
-        
-
-          // first argument `body` === `JWR.body`
-          // (just for convenience, and to maintain familiar usage, a la `JQuery.get()`)
         });
       }
-    io.socket.on('order', function onServerSentEvent (msg) {
-              console.log(msg);
+    io.socket.on('order', function onServerSentEvent (obj) {
+             if(obj.verb === 'created'){
+              $scope.orders.push(obj.data);
+              // Add the data to current chatList
+              // Call $scope.$digest to make the changes in UI
               $scope.$digest();
-          });
+            }
+  });
     
  
 })

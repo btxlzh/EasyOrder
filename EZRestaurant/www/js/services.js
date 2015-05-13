@@ -14,14 +14,16 @@ angular.module('starter.services', [])
       dataFactory.getAllRestaurants = function(){
           return $http.get('http://localhost:1337/restaurant/');
       } 
-      dataFactory.getRestaurant = function(id){
-        return $http.get('http://localhost:1337/restaurant/'+id)
+      dataFactory.getRestaurant = function(){
+        console.log(AccountService);
+        return $http.get('http://localhost:1337/restaurant/'+AccountService.restaurant.id)
             .then(
                   function(resp){
                     console.log(resp.data);
                     dataFactory.restaurant = resp.data;
                     return resp.data;
                   },function (err){
+                    console.log(err);
                     return err;
                   }
             );
@@ -107,6 +109,9 @@ angular.module('starter.services', [])
   })
 .factory('AccountService',function($http,$ionicHistory,$q,LocalStorage){
       var AccountFactory= {};
+      AccountFactory.user =null;
+      AccountFactory.restaurant =null;
+      
       AccountFactory.login = function(credential){
           $ionicHistory.nextViewOptions({
             disableAnimate: true,
@@ -115,22 +120,14 @@ angular.module('starter.services', [])
           return $http.post("http://localhost:1337/auth/login/",credential)
           .then( 
               function(respUser){
-                  return $http.get("http://localhost:1337/user/jwt")
-                  .then( 
-                        function(respToken){
-                          AccountFactory.setUser(respUser.data); 
-                          return {
-                              user:respUser.data,
-                              token:respToken.data
-                          }
-                        }
-                  )
-              }
-          );
+                  var promise1 = AccountFactory.setUser(respUser.data);
+                  var promise2 = AccountFactory.getToken();
+                  
+                  $q.all([promise1,promise2]).then(function(){
+                    return AccountFactory.getRestaurant(respUser.data.restaurant,respUser.data.id);
+                  });
 
-      }
-      AccountFactory.loginWithToken = function(token){
-          return 
+          })
       }
       AccountFactory.logout = function(){
           $ionicHistory.nextViewOptions({
@@ -139,17 +136,28 @@ angular.module('starter.services', [])
           });
           LocalStorage.del('EZ_LOCAL_TOKEN');
           delete AccountFactory.user;
+          delete AccountFactory.restaurant;
           return $http.get("http://localhost:1337/auth/logout");
       }
       AccountFactory.getToken =function (){
-        return $http.get("http://localhost:1337/user/jwt")
+        return $http.get("http://localhost:1337/user/jwt").then(function(resp){
+            LocalStorage.setObj('EZ_LOCAL_TOKEN',resp.data.token);
+            return resp.data.token;
+        });
         }
       AccountFactory.getUser =function (){
          console.log('gerUser Start!');
          var d = $q.defer();
         if(AccountFactory.user){
           console.log('exist user'+AccountFactory.user);
-          d.resolve(AccountFactory.user);
+          if(AccountFactory.restaurant)
+            d.resolve(AccountFactory.restaurant);
+          else{
+             var promise = AccountFactory.getRestaurant(null,AccountFactory.user.id);
+             $q.all([promise]).then(function(){
+                d.resolve(AccountFactory.restaurant);
+             })
+          }
         }else {
           console.log('user not exist');
           var ret;
@@ -157,18 +165,26 @@ angular.module('starter.services', [])
             console.log('No local token');
             d.reject('No local token');
           }else{
-            $http.get("http://localhost:1337/auth/loginWithToken?access_token="+LocalStorage.getObj('EZ_LOCAL_TOKEN').token)
-            .then(
-                  function(resp){
-                       console.log('GET User by login with token'+LocalStorage.getObj('EZ_LOCAL_TOKEN').token);
-                      AccountFactory.setUser(resp.data); 
-                        d.resolve(resp.data);
-                  },function (err){
-                      console.log('error token');
-                      LocalStorage.del('EZ_LOCAL_TOKEN');
-                       d.reject('Error local token');
-                  }
-            );
+              var obj = LocalStorage.getObj('EZ_LOCAL_TOKEN');
+              if(obj){
+                $http.get("http://localhost:1337/auth/loginWithToken?access_token="+obj)
+                .then(
+                      function(resp){
+                          console.log('GET User by login with token'+obj);
+                            AccountFactory.user = resp.data;
+                            var promise = AccountFactory.getRestaurant(resp.data.restaurant,resp.data.id);
+                            $q.all([promise]).then(function(){
+                              d.resolve(AccountFactory.restaurant);
+                            })
+                      },function (err){
+                          console.log('error token');
+                         LocalStorage.del('EZ_LOCAL_TOKEN');
+                           d.reject('Error local token');
+                      }
+                  );
+                
+              } 
+            
           }
         }
         return d.promise;
@@ -183,6 +199,75 @@ angular.module('starter.services', [])
                     return resp.data;
                 }
           );
+      }
+      AccountFactory.createDish=function(menu_id){
+          return $http.get("http://localhost:1337/dish/createDish?owner="+menu_id)
+            .then(
+                  function(resp){
+                      return resp.data;
+                  }
+            );
+          
+      }
+     AccountFactory.deleteDish=function(dish_id){
+          return $http.get("http://localhost:1337/dish/destroy/"+dish_id)
+            .then(
+                  function(resp){
+                      return resp.data;
+                  }
+            );
+          
+      }      
+    AccountFactory.getMenu=function(id){
+        return $http.get('http://localhost:1337/menu/'+id+'/all')
+            .then(
+                  function(resp){
+                    console.log(resp.data);
+                    AccountFactory.menu = resp.data;
+                    return resp.data;
+                  },function (err){
+                    console.log(err);
+                    return err;
+                  }
+            );
+      }
+      AccountFactory.getRestaurant = function(rid,uid){
+        if (rid){
+          return $http.get('http://localhost:1337/restaurant/'+rid)
+              .then(
+                    function(resp){
+                      console.log(resp.data);
+                      AccountFactory.restaurant = resp.data;
+                      return resp.data;
+                    },function (err){
+                      console.log(err);
+                      return err;
+                    }
+              );
+        }
+        else {
+            return $http.get("http://localhost:1337/restaurant/createRestaurant?owner="+uid)
+            .then(
+                  function(resp){
+                      AccountFactory.restaurant = resp.data.restaurant;
+                      AccountFactory.user =  resp.data.user;
+                      return resp.data.restaurant;
+                  }
+            );
+
+      }
+    }
+     AccountFactory.getDish = function(id){
+        return $http.get('http://localhost:1337/dish/'+id)
+            .then(
+                  function(resp){
+                    console.log(resp.data);
+                    return resp.data;
+                  },function (err){
+                    console.log(err);
+                    return err;
+                  }
+            );
       }
       return AccountFactory;
   })

@@ -9,19 +9,14 @@ module.exports = {
 	listenOrder:function(req,res){
 		
 		var data_from_client = req.params.all();
-		if(req.isSocket){
+		console.log(data_from_client);
+		if(req.isSocket&&req.method=='GET'){
 			// subscribe client to model changes 
 			Order.watch(req);
 			console.log( 'User subscribed to ' + req.socket.id );
 			return res.send("succ");
 		}
+		return res.send();
 	},
-	createPub:function(req,res){
-		Order.create()
-				.exec(function(error){
-					console.log("publish");
-					Order.publishCreate({id: 10, message : "ata_from_client.message"});
-				}); 
-	}
 };
 

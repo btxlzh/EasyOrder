@@ -42,45 +42,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
 
   // Each tab has its own nav history stack:
 
-  .state('tab.search', {
-    url: '/search',
+  .state('tab.orders', {
+    url: '/orders',
     views: {
-      'tab-search': {
-        templateUrl: 'templates/tab-search.html',
-        controller: 'SearchCtrl'
+      'tab-order': {
+        templateUrl: 'templates/orders.html',
+        controller: 'OrdersCtrl'
       }
     }
   })
- .state('tab.restaurant', {
-    url: '/restaurant/:id',
+  .state('tab.orderdetail', {
+    url: '/order/:id',
     
     views: {
-       'tab-search': {
-          templateUrl: 'templates/restaurant.html',
-          controller: 'RestaurantCtrl',
-          
+       'tab-order': {
+            templateUrl: 'templates/orderdetail.html',
+            controller: 'OrderDetailCtrl', 
           }
     },
     resolve : {
-        restaurant_data : function(DataService,$stateParams) {
-                return DataService.getRestaurant($stateParams.id);
-        }
-    }
-    
-  })
-  .state('tab.menu', {
-    url: '/menu/:id',
-    
-    views: {
-       'tab-search': {
-            templateUrl: 'templates/restaurant-menu.html',
-            controller: 'RestaurantMenuCtrl', 
-          }
-    },
-    resolve : {
-        menu_data : function(DataService,$stateParams) {
-                return DataService.getMenu($stateParams.id);
-        }
+
     }
     
   })
@@ -88,57 +69,75 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
     url: '/dish/:id',
     
     views: {
-       'tab-search': {
+       'tab-restaurant': {
             templateUrl: 'templates/restaurant-dish.html',
             controller: 'RestaurantDishCtrl', 
           }
     },
     resolve : {
-        dish_data : function(DataService,$stateParams) {
-                return DataService.getDish($stateParams.id);
-        }
+         dish_data : function(AccountService,$stateParams) {
+                 return AccountService.getDish($stateParams.id);
+         }
     }
     
   })
-  .state('tab.cart', {
-      url: '/cart',
+   .state('tab.menu', {
+    url: '/menu/:id',
+    views: {
+       'tab-restaurant': {
+            templateUrl: 'templates/restaurant-menu.html',
+            controller: 'RestaurantMenuCtrl', 
+          }
+    },
+    resolve : {
+         menu_data : function(AccountService,$stateParams) {
+                return AccountService.getMenu($stateParams.id);
+        }
+    },
+  })
+  .state('tab.dishedit', {
+    url: '/editdish/:id',
+    
+    views: {
+       'tab-restaurant': {
+            templateUrl: 'templates/dishedit.html',
+            controller: 'RestaurantDishCtrl', 
+          }
+    },
+    resolve : {
+        // dish_data : function(DataService,$stateParams) {
+        //         return DataService.getDish($stateParams.id);
+        // }
+    }
+    
+  })
+  .state('tab.restaurant', {
+      url: '/restaurant',
       views: {
-        'tab-cart': {
-          templateUrl: 'templates/tab-cart.html',
-          controller: 'CartCtrl',
+        'tab-restaurant': {
+          templateUrl: 'templates/restaurant.html',
+          controller: 'RestaurantCtrl',
         }
       }
     })
-  .state('tab.login', {
+  .state('tab.restaurantedit', {
+      url: '/restaurantedit',
+      views: {
+        'tab-restaurant': {
+          templateUrl: 'templates/restaurantedit.html',
+          controller: 'RestaurantEditCtrl',
+        }
+      },
+    })
+  .state('login', {
     url: '/login',
-    views: {
-      'tab-account': {
         templateUrl: 'templates/login.html',
         controller: 'LoginCtrl'
-      }
-    }
-  })
-  .state('tab.account', {
-  url: '/account',
-  views: {
-    'tab-account': {
-      templateUrl: 'templates/account.html',
-      controller: 'AccountCtrl',
-    }
-  }
-  })
-  .state('tab.editPrifile', {
-  url: '/account/edit',
-  views: {
-    'tab-account': {
-      templateUrl: 'templates/edit-profile.html',
-      controller: 'ProfileCtrl',
-    }
-  }
   })
 
+
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/search');
+  $urlRouterProvider.otherwise('/tab/restaurant');
 
 })
 ;

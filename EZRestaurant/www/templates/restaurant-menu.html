@@ -4,16 +4,24 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-<ion-view view-title="  {{restaurant.name}}">
-  <ion-content class="padding">
-    <p>
-      <ul class="list" ng-repeat="dish in menu.dishes">
-        <li class="item" >
-          <a href="#tab/dish/{{dish.id}}">
-            {{dish.name}}
-          </a>
-        </li>
-      </ul>
-    </p>
-  </ion-content>
+<ion-view view-title="Menu">
+<ion-nav-buttons side="primary">
+      <button class="button" ng-click="add()">
+        add
+      </button>
+    </ion-nav-buttons>
+ <ion-content>
+      <ion-list show-delete="shouldShowDelete" can-swipe="listCanSwipe">
+
+        <ion-item  ng-repeat="dish in menu.dishes">
+          <ion-delete-button class="ion-minus-circled" ng-click="delete($index)"></ion-delete-button>
+            <a href="#tab/dish/{{dish.id}}">
+              {{dish.name}}
+            </a>
+            </ion-item>
+      </ion-list>
+      <ion-toggle ng-model="shouldShowDelete">
+          Show Delete?
+      </ion-toggle>
+   </ion-content>
 </ion-view>

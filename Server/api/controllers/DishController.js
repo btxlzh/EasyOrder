@@ -6,6 +6,11 @@
  */
 
 module.exports = {
-	
+	 createDish:function(req,res){
+      var id = req.param('owner');
+      Dish.create({owner:id,name:'default'}).exec(function createCB(err,created_dish){
+             return res.send(created_dish);
+      });
+    },
 };
 
