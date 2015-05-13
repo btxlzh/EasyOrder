@@ -1,14 +1,8 @@
 angular.module('starter.controllers',  ['ionic', 'ngCordova'])
 
-.controller('CartCtrl', function($scope, DataService,LocalStorage) {
-  $scope.dishes = DataService.dishes;
-  $scope.checkout=function(){
-    DataService.checkout();
-  }
-})
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
+
+.controller('OrderDetailCtrl', function($scope, $stateParams) {
 })
 
 .controller('LoginCtrl', function($q,$scope,$http,$state,$ionicPopup,$ionicHistory,AccountService,ErrorService,LocalStorage) {
@@ -16,7 +10,7 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
   $scope.postData={};
   $scope.login = function(){
       AccountService.login($scope.postData).then(function(data){
-      console.log(data);
+        
         $state.go('tab.restaurant');
       },function(err){
           ErrorService.popUp("WRONG email OR password!");
@@ -29,6 +23,7 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
   $scope.$on('$ionicView.beforeEnter', function(){
     AccountService.getUser().then(function(data){
         $scope.restaurant = data;
+        AccountService.restaurant=data;
     },function(err){
         $ionicHistory.nextViewOptions({
             disableAnimate: true,
@@ -72,28 +67,7 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
   }
 
 })
-.controller("RestaurantEditCtrl",function($scope,$http, dish_data,ErrorService,AccountService) {
-  
-  $scope.edit=function(){
-    AccountService.editRestaurant($scope.postData);
-  }
-
-})
 .controller("OrderCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,DataService,ErrorService) {
-
-     // For JSON responses, resp.data contains the result
-
-    // $scope.scanBarcode = function() {
-    //     $cordovaBarcodeScanner.scan().then(function(imageData) {
-    //         //var restaurantID= DataService.getRestaurantByQRCode(imageData.text);
-    //        // state.go('tab.restaurant-detail',{'id':restaurantID});
-    //          alert(imageData.text);
-    //     }, function(error) {
-    //          alert("error");
-    //     });
-    // };
-    $scope.baseUrl = 'http://localhost:1337';
-   
     $scope.orders=[];
     $scope.listen = function(){
       io.socket.get('/Order/listenOrder',function serverResponded (body, JWR) {
@@ -114,18 +88,4 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
   });
     
  
-})
-.controller("ProfileCtrl",function($scope,$http,$state,AccountService){
-    $scope.user = AccountService.user;
-    $scope.edit = function (att, val){
-       console.log(att,val);
-        AccountService.editUser(att,val).then(function(data){
-            AccountService.user = data;
-            $scope.user = data;
-            console.log(data);
-        },function(err){
-          return "err";
-        });
-        return "succ";
-    }
 });

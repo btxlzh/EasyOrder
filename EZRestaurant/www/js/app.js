@@ -42,12 +42,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
 
   // Each tab has its own nav history stack:
 
-  .state('tab.orders', {
-    url: '/orders',
+  .state('tab.order', {
+    url: '/order',
     views: {
       'tab-order': {
-        templateUrl: 'templates/orders.html',
-        controller: 'OrdersCtrl'
+        templateUrl: 'templates/order.html',
+        controller: 'OrderCtrl'
       }
     }
   })
@@ -95,22 +95,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
         }
     },
   })
-  .state('tab.dishedit', {
-    url: '/editdish/:id',
-    
-    views: {
-       'tab-restaurant': {
-            templateUrl: 'templates/dishedit.html',
-            controller: 'RestaurantDishCtrl', 
-          }
-    },
-    resolve : {
-        // dish_data : function(DataService,$stateParams) {
-        //         return DataService.getDish($stateParams.id);
-        // }
-    }
-    
-  })
   .state('tab.restaurant', {
       url: '/restaurant',
       views: {
@@ -120,15 +104,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
         }
       }
     })
-  .state('tab.restaurantedit', {
-      url: '/restaurantedit',
-      views: {
-        'tab-restaurant': {
-          templateUrl: 'templates/restaurantedit.html',
-          controller: 'RestaurantEditCtrl',
-        }
-      },
-    })
+  // .state('tab.restaurantedit', {
+  //     url: '/restaurantedit',
+  //     views: {
+  //       'tab-restaurant': {
+  //         templateUrl: 'templates/restaurantedit.html',
+  //         controller: 'RestaurantEditCtrl',
+  //       }
+  //     },
+  //   })
   .state('login', {
     url: '/login',
         templateUrl: 'templates/login.html',

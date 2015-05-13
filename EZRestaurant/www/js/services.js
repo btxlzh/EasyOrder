@@ -120,13 +120,10 @@ angular.module('starter.services', [])
           return $http.post("http://localhost:1337/auth/login/",credential)
           .then( 
               function(respUser){
-                  var promise1 = AccountFactory.setUser(respUser.data);
-                  var promise2 = AccountFactory.getToken();
-                  
-                  $q.all([promise1,promise2]).then(function(){
-                    return AccountFactory.getRestaurant(respUser.data.restaurant,respUser.data.id);
-                  });
-
+                  AccountFactory.setUser(respUser.data);
+                  AccountFactory.getToken();
+                  AccountFactory.getRestaurant(respUser.data.restaurant,respUser.data.id);
+                  console.log(respUser.data.restaurant+"  "+respUser.data.id);
           })
       }
       AccountFactory.logout = function(){
@@ -149,11 +146,14 @@ angular.module('starter.services', [])
          console.log('gerUser Start!');
          var d = $q.defer();
         if(AccountFactory.user){
-          console.log('exist user'+AccountFactory.user);
-          if(AccountFactory.restaurant)
+          console.log(AccountFactory.user);
+          console.log("res");
+          console.log(AccountFactory.restaurant);
+          if(AccountFactory.restaurant){
             d.resolve(AccountFactory.restaurant);
+          }
           else{
-             var promise = AccountFactory.getRestaurant(null,AccountFactory.user.id);
+             var promise = AccountFactory.getRestaurant(AccountFactory.user.restaurant,AccountFactory.user.id);
              $q.all([promise]).then(function(){
                 d.resolve(AccountFactory.restaurant);
              })
@@ -172,10 +172,11 @@ angular.module('starter.services', [])
                       function(resp){
                           console.log('GET User by login with token'+obj);
                             AccountFactory.user = resp.data;
-                            var promise = AccountFactory.getRestaurant(resp.data.restaurant,resp.data.id);
-                            $q.all([promise]).then(function(){
-                              d.resolve(AccountFactory.restaurant);
-                            })
+                              AccountFactory.getRestaurant(resp.data.restaurant,resp.data.id).then(function(data){
+                                  d.resolve(AccountFactory.restaurant);
+                              });
+                              
+              
                       },function (err){
                           console.log('error token');
                          LocalStorage.del('EZ_LOCAL_TOKEN');
@@ -232,12 +233,14 @@ angular.module('starter.services', [])
             );
       }
       AccountFactory.getRestaurant = function(rid,uid){
-        if (rid){
+        if (rid!=null){
           return $http.get('http://localhost:1337/restaurant/'+rid)
               .then(
                     function(resp){
+                      console.log("getRestaurant");
                       console.log(resp.data);
                       AccountFactory.restaurant = resp.data;
+                      console.log(AccountFactory.restaurant);
                       return resp.data;
                     },function (err){
                       console.log(err);
@@ -249,6 +252,8 @@ angular.module('starter.services', [])
             return $http.get("http://localhost:1337/restaurant/createRestaurant?owner="+uid)
             .then(
                   function(resp){
+                      console.log("create restaurant");
+                      console.log(resp.data.restaurant);
                       AccountFactory.restaurant = resp.data.restaurant;
                       AccountFactory.user =  resp.data.user;
                       return resp.data.restaurant;

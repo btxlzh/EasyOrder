@@ -45,8 +45,12 @@ module.exports = {
           });
       });
     },
-    updateRestaurant:function(req,res){
-
+    getRestaurant:function(req,res){
+      var owner = req.param('uid');
+      var id = req.param('rid');
+      if(id){
+        
+      }
     }
 };
 
