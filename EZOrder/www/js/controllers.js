@@ -141,7 +141,7 @@ AccountService.login($scope.postData).then(function(data){
         $scope.picData = fileEntry.nativeURL;
         $scope.ftLoad = true;
         //var image = document.getElementById('myImage');
-        $scope.user.photoUrl = fileEntry.nativeURL;
+        
         upload(fileEntry.nativeURL);
         });
       $ionicLoading.show({template: 'Loading', duration:500});
@@ -153,10 +153,15 @@ AccountService.login($scope.postData).then(function(data){
     
   upload = function(fileURL){
     var win = function (r) {
+          baseURL = "http://localhost:1337/images/";
           console.log("Code = " + r.responseCode);
           console.log("Response = " + r.response);
           console.log("Sent = " + r.bytesSent);
           $scope.modalPic.hide();
+          AccountService.editUser('photoUrl',baseURL+$scope.user.id+"_profile.jpg").then(function(data){
+            $scope.user.photoUrl = baseURL+$scope.user.id+"_profile.jpg";
+
+          });
       }
 
       var fail = function (error) {
@@ -171,7 +176,7 @@ AccountService.login($scope.postData).then(function(data){
       options.mimeType = "text/plain";
      
       var params = {};
-      params.id = "1";
+      params.id = $scope.user.id;
 
       options.params = params;
 
@@ -189,19 +194,22 @@ AccountService.login($scope.postData).then(function(data){
 
     $ionicModal.fromTemplateUrl('changeNameModal.html', {
       scope: $scope,
-      animation: 'slide-in-up'
+      animation: 'slide-in-up',
+      backdropClickToClose : true
     }).then(function(modal) {
       $scope.modalName = modal
     })  
 
     $ionicModal.fromTemplateUrl('changePhoneModal.html', {
       scope: $scope,
-      animation: 'slide-in-up'
+      animation: 'slide-in-up',
+      backdropClickToClose : true
     }).then(function(modal) {
       $scope.modalPhone = modal
     })  
     $ionicModal.fromTemplateUrl('changePicModal.html', {
-      scope: $scope,
+      scope: $scope
+
     }).then(function(modal) {
       $scope.modalPic = modal
     })  
