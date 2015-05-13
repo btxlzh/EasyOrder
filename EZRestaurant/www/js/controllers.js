@@ -67,7 +67,7 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
   }
 
 })
-.controller("OrderCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,DataService,ErrorService) {
+.controller("OrderCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,ErrorService) {
     $scope.orders=[];
     $scope.listen = function(){
       io.socket.get('/Order/listenOrder',function serverResponded (body, JWR) {
