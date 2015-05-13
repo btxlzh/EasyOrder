@@ -44,23 +44,25 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
         // For JSON responses, resp.data contains the result
    });
 
-  $scope.update=function(){
-    AccountService.updateRestaurant($scope.postData).then(function(data){
 
-        $ionicHistory.nextViewOptions({
-            disableAnimate: true,
-            disableBack: true
-        });
-        $state.go('tab.restaurant');
-    },function(err){
-       
-  })
-  }
 }
 })
 
-.controller("RestaurantMenuCtrl",function($scope,$http,menu_data,ErrorService) {
+.controller("RestaurantMenuCtrl",function($scope,$http,menu_data,ErrorService,AccountService) {
   $scope.menu = menu_data;
+  $scope.listCanSwipe=true;
+  $scope.add=function(){
+    AccountService.createDish(AccountService.menu.id).then(function callback(data){
+      console.log(data);
+      $scope.menu.dishes.push(data);
+    })
+  }
+  $scope.delete=function(index){
+    
+    AccountService.deleteDish($scope.menu.dishes[index].id).then(function callback(data){
+      $scope.menu.dishes.splice(index, 1);
+    })
+  }
 
 })
 .controller("RestaurantDishCtrl",function($scope,$http, dish_data,ErrorService,DataService) {

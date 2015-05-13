@@ -129,9 +129,6 @@ angular.module('starter.services', [])
 
           })
       }
-      AccountFactory.loginWithToken = function(token){
-          return 
-      }
       AccountFactory.logout = function(){
           $ionicHistory.nextViewOptions({
             disableAnimate: true,
@@ -203,13 +200,25 @@ angular.module('starter.services', [])
                 }
           );
       }
-      AccountFactory.createRestaurant=function(id){
+      AccountFactory.createDish=function(menu_id){
+          return $http.get("http://localhost:1337/dish/createDish?owner="+menu_id)
+            .then(
+                  function(resp){
+                      return resp.data;
+                  }
+            );
           
       }
-      AccountFactory.editRestaurant=function(data){
-
-      }
-      AccountFactory.getMenu=function(id){
+     AccountFactory.deleteDish=function(dish_id){
+          return $http.get("http://localhost:1337/dish/destroy/"+dish_id)
+            .then(
+                  function(resp){
+                      return resp.data;
+                  }
+            );
+          
+      }      
+    AccountFactory.getMenu=function(id){
         return $http.get('http://localhost:1337/menu/'+id+'/all')
             .then(
                   function(resp){
@@ -248,6 +257,18 @@ angular.module('starter.services', [])
 
       }
     }
+     AccountFactory.getDish = function(id){
+        return $http.get('http://localhost:1337/dish/'+id)
+            .then(
+                  function(resp){
+                    console.log(resp.data);
+                    return resp.data;
+                  },function (err){
+                    console.log(err);
+                    return err;
+                  }
+            );
+      }
       return AccountFactory;
   })
 .factory('ErrorService',function($ionicPopup){

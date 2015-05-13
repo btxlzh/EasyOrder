@@ -75,9 +75,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
           }
     },
     resolve : {
-        // dish_data : function(DataService,$stateParams) {
-        //         return DataService.getDish($stateParams.id);
-        // }
+         dish_data : function(AccountService,$stateParams) {
+                 return AccountService.getDish($stateParams.id);
+         }
     }
     
   })
