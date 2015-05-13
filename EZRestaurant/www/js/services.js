@@ -1,112 +1,4 @@
 angular.module('starter.services', [])
-.factory('DataService',function($http,AccountService){
-      function getUrlVars(Url) {
-          var vars = {};
-          var parts = url.replace(/[?&]+([^=&]+)=([^&]*)/gi,    
-          function(m,key,value) {
-            vars[key] = value;
-          });
-          return vars;
-      }
-
-      var dataFactory = {};
-      dataFactory.cart=[];
-      dataFactory.getAllRestaurants = function(){
-          return $http.get('http://localhost:1337/restaurant/');
-      } 
-      dataFactory.getRestaurant = function(){
-        console.log(AccountService);
-        return $http.get('http://localhost:1337/restaurant/'+AccountService.restaurant.id)
-            .then(
-                  function(resp){
-                    console.log(resp.data);
-                    dataFactory.restaurant = resp.data;
-                    return resp.data;
-                  },function (err){
-                    console.log(err);
-                    return err;
-                  }
-            );
-      }
-
-      dataFactory.getMenu = function(id){
-        return $http.get('http://localhost:1337/menu/'+id+'/all')
-            .then(
-                  function(resp){
-                    console.log(resp.data);
-                    dataFactory.menu = resp.data;
-                    return resp.data;
-                  },function (err){
-                    console.log(err);
-                    console.log(dataFactory.restaurant.menu);
-                    return err;
-                  }
-            );
-      }
-       dataFactory.getDish = function(id){
-        return $http.get('http://localhost:1337/dish/'+id)
-            .then(
-                  function(resp){
-                    console.log(resp.data);
-                    return resp.data;
-                  },function (err){
-                    console.log(err);
-                    return err;
-                  }
-            );
-      }
-      dataFactory.getRestaurantByQRCode = function(Image_data){
-          return getUrlVars(Image_data.te)["id"];
-      }
-      dataFactory.dishes=[];
-      dataFactory.dish_map={};
-      dataFactory.addToCart=function(dish,num){
-
-        if(dish.id in dataFactory.dish_map){
-              index =dataFactory.dish_map[dish.id];
-          dataFactory.dishes[index].num+=num;
-                // console.log("add exist");
-                //  console.log(Cart.dishes);
-
-        }else {
-
-          dish.num=num;
-          //push new
-          dataFactory.dish_map[dish.id]=dataFactory.dishes.length;
-          dataFactory.dishes.push(dish);
-           // console.log("new add");
-           // console.log(Cart.dishes);
-           // console.log(Cart.dish_map);
-        }
-        return ;
-      }
-      dataFactory.getCart=function(){
-        return dataFactory.dishes;
-      }
-
-      dataFactory.clearCart =function(){
-        dataFactory.dishes.length=0;
-        return ;
-      }
-      dataFactory.checkout = function(){
-        var requestData={};
-        requestData.user = AccountService.user.id;
-        requestData.orderDetail = dataFactory.dishes;
-        requestData.restaurant = dataFactory.restaurant.id;
-        return $http.post('http://localhost:1337/Order/create',requestData, {
-            headers: { 'Content-Type': 'application/json'}
-        }).then(
-                      function(resp){
-                        console.log(resp.data);
-                        return resp.data;
-                      },function (err){
-                        console.log(err);
-                        return err;
-                      }
-                );
-      }
-      return dataFactory;
-  })
 .factory('AccountService',function($http,$ionicHistory,$q,LocalStorage){
       var AccountFactory= {};
       AccountFactory.user =null;
@@ -120,10 +12,12 @@ angular.module('starter.services', [])
           return $http.post("http://localhost:1337/auth/login/",credential)
           .then( 
               function(respUser){
-                  AccountFactory.setUser(respUser.data);
-                  AccountFactory.getToken();
-                  AccountFactory.getRestaurant(respUser.data.restaurant,respUser.data.id);
-                  console.log(respUser.data.restaurant+"  "+respUser.data.id);
+                  var promise1=AccountFactory.setUser(respUser.data);
+                  var promise2= AccountFactory.getToken();
+                   
+                  $q.all([promise1,promise2]).then(function(){
+                    return ;
+                  });
           })
       }
       AccountFactory.logout = function(){
@@ -240,7 +134,6 @@ angular.module('starter.services', [])
                       console.log("getRestaurant");
                       console.log(resp.data);
                       AccountFactory.restaurant = resp.data;
-                      console.log(AccountFactory.restaurant);
                       return resp.data;
                     },function (err){
                       console.log(err);
