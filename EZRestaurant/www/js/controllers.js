@@ -41,7 +41,9 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
 
 }
 })
-
+.controller("RestaurantQRCodeCtrl",function($scope, AccountService) {
+  $scope.qrSrc = AccountService.getQRSrc();
+})
 .controller("RestaurantMenuCtrl",function($scope,$http,menu_data,ErrorService,AccountService) {
   $scope.menu = menu_data;
   $scope.listCanSwipe=true;
@@ -85,6 +87,6 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
               $scope.$digest();
             }
   });
-    
+
  
 });

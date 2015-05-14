@@ -95,6 +95,10 @@ angular.module('starter.services', [])
                 }
           );
       }
+      AccountFactory.getQRSrc = function(){
+	  console.log(AccountFactory.user.restaurant);
+          return "http://localhost:1337/restaurant/getQRcode?id=" + AccountFactory.user.restaurant;
+      }
       AccountFactory.createDish=function(menu_id){
           return $http.get("http://localhost:1337/dish/createDish?owner="+menu_id)
             .then(
