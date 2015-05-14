@@ -23,7 +23,6 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
   $scope.$on('$ionicView.beforeEnter', function(){
     AccountService.getUser().then(function(data){
         $scope.restaurant = data;
-        AccountService.restaurant=data;
     },function(err){
         $ionicHistory.nextViewOptions({
             disableAnimate: true,
