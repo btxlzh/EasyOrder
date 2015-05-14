@@ -57,13 +57,13 @@ angular.module('starter.services', [])
       dataFactory.getRestaurantByQRCode = function(Image_data){
           return getUrlVars(Image_data.te)["id"];
       }
-      dataFactory.dishes=[];
+      dataFactory.cart=[];
       dataFactory.dish_map={};
       dataFactory.addToCart=function(dish,num){
 
         if(dish.id in dataFactory.dish_map){
               index =dataFactory.dish_map[dish.id];
-          dataFactory.dishes[index].num+=num;
+          dataFactory.cart[index].num+=num;
                 // console.log("add exist");
                 //  console.log(Cart.dishes);
 
@@ -71,8 +71,8 @@ angular.module('starter.services', [])
 
           dish.num=num;
           //push new
-          dataFactory.dish_map[dish.id]=dataFactory.dishes.length;
-          dataFactory.dishes.push(dish);
+          dataFactory.dish_map[dish.id]=dataFactory.cart.length;
+          dataFactory.cart.push(dish);
            // console.log("new add");
            // console.log(Cart.dishes);
            // console.log(Cart.dish_map);
@@ -80,18 +80,19 @@ angular.module('starter.services', [])
         return ;
       }
       dataFactory.getCart=function(){
-        return dataFactory.dishes;
+        return dataFactory.cart;
       }
 
       dataFactory.clearCart =function(){
-        dataFactory.dishes.length=0;
+        dataFactory.cart.length=0;
         return ;
       }
       dataFactory.checkout = function(){
         var requestData={};
         requestData.user = AccountService.user.id;
-        requestData.orderDetail = dataFactory.dishes;
+        requestData.dishes = dataFactory.cart;
         requestData.restaurant = dataFactory.restaurant.id;
+
         return $http.post('http://localhost:1337/Order/create',requestData, {
             headers: { 'Content-Type': 'application/json'}
         }).then(
