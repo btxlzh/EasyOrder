@@ -5,12 +5,9 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
   $scope.checkout=function(){
     DataService.checkout().then(function(resp){
       DataService.cart.length=0;
+      DataService.cart_map={};
     });
   }
-})
-
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
 })
 
 .controller('LoginCtrl', function($q,$scope,$http,$state,$ionicPopup,$ionicHistory,AccountService,ErrorService,LocalStorage) {

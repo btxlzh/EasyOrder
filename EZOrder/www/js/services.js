@@ -101,11 +101,11 @@ angular.module('starter.services', [])
           return getUrlVars(Image_data.te)["id"];
       }
       dataFactory.cart=[];
-      dataFactory.dish_map={};
+      dataFactory.cart_map={};
       dataFactory.addToCart=function(dish,num){
 
-        if(dish.id in dataFactory.dish_map){
-              index =dataFactory.dish_map[dish.id];
+        if(dish.id in dataFactory.cart_map){
+              index =dataFactory.cart_map[dish.id];
           dataFactory.cart[index].num+=num;
                 // console.log("add exist");
                 //  console.log(Cart.dishes);
@@ -115,7 +115,7 @@ angular.module('starter.services', [])
 
           dish.num=num;
           //push new
-          dataFactory.dish_map[dish.id]=dataFactory.cart.length;
+          dataFactory.cart_map[dish.id]=dataFactory.cart.length;
           dataFactory.cart.push(dish);
            // console.log("new add");
            // console.log(Cart.dishes);
