@@ -127,11 +127,10 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
 .controller("RestaurantQRCodeCtrl",function($scope, AccountService) {
   $scope.qrSrc = AccountService.getQRSrc();
 })
-.controller("RestaurantMenuCtrl",function( $q,$scope,$state,$http,$stateParams,menu_data,ErrorService,AccountService) {
+.controller("RestaurantMenuCtrl",function( $q,$scope,$state,$http,$stateParams,ErrorService,AccountService) {
    $scope.$on('$ionicView.beforeEnter', function(){
     AccountService.getMenu($stateParams.id).then(function(data){
         $scope.menu=data;
-        console.log(data);
     },function(err){
     })
   });

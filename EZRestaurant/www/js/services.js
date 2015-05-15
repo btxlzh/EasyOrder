@@ -112,6 +112,7 @@ angular.module('starter.services', [])
                     return resp.data;
                 }
           );
+        }
           
       AccountFactory.getQRSrc = function(){
 	  console.log(AccountFactory.user.restaurant);

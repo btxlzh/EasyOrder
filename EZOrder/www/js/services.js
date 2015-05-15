@@ -75,28 +75,21 @@ angular.module('starter.services', [])
 
         if(dish.id in dataFactory.dish_map){
               index =dataFactory.dish_map[dish.id];
-<<<<<<< HEAD
           dataFactory.cart[index].num+=num;
                 // console.log("add exist");
                 //  console.log(Cart.dishes);
-=======
-          dataFactory.dishes[index].num+=num;
->>>>>>> xuke
+
 
         }else {
 
           dish.num=num;
           //push new
-<<<<<<< HEAD
           dataFactory.dish_map[dish.id]=dataFactory.cart.length;
           dataFactory.cart.push(dish);
            // console.log("new add");
            // console.log(Cart.dishes);
            // console.log(Cart.dish_map);
-=======
-          dataFactory.dish_map[dish.id]=dataFactory.dishes.length;
-          dataFactory.dishes.push(dish);
->>>>>>> xuke
+
         }
         return ;
       }
@@ -180,18 +173,21 @@ angular.module('starter.services', [])
             console.log('No local token');
             d.reject('No local token');
           }else{
-            $http.get("http://localhost:1337/auth/loginWithToken?access_token="+LocalStorage.getObj('EZ_LOCAL_TOKEN').token)
-            .then(
-                  function(resp){
-                       console.log('GET User by login with token'+LocalStorage.getObj('EZ_LOCAL_TOKEN').token);
-                      AccountFactory.setUser(resp.data); 
-                        d.resolve(resp.data);
-                  },function (err){
-                      console.log('error token');
-                      LocalStorage.del('EZ_LOCAL_TOKEN');
-                       d.reject('Error local token');
-                  }
-            );
+            LocalStorage.getObj('EZ_LOCAL_TOKEN',function(data){
+                $http.get("http://localhost:1337/auth/loginWithToken?access_token="+data.token)
+                .then(
+                      function(resp){
+                           console.log('GET User by login with token'+data.token);
+                          AccountFactory.setUser(resp.data); 
+                            d.resolve(resp.data);
+                      },function (err){
+                          console.log('error token');
+                          LocalStorage.del('EZ_LOCAL_TOKEN');
+                           d.reject('Error local token');
+                      }
+                 );
+            });
+            
           }
         }
         return d.promise;

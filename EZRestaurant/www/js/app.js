@@ -90,9 +90,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
           }
     },
     resolve : {
-         menu_data : function(AccountService,$stateParams) {
-                return AccountService.getMenu($stateParams.id);
-        }
+
     },
   })
   .state('tab.restaurant', {

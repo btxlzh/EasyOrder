@@ -11,9 +11,14 @@ angular.module('localStorageServices', [])
     setObj: function(key, value) {
       $window.localStorage[key] = JSON.stringify(value);
     },
-    getObj: function(key) {
+    getObj: function(key,callback) {
       console.log(key,$window.localStorage[key]);
-      return JSON.parse($window.localStorage[key] || '{}');
+      if(callback){
+        var data = JSON.parse($window.localStorage[key] || '{}');
+        callback(data);
+      }else {
+        return JSON.parse($window.localStorage[key] || '{}');
+      }
     },
     del : function(key) {
       delete $window.localStorage[key];
