@@ -4,7 +4,7 @@
  <div id="profile-bg"></div>
  <div id="content">
  	<div id="profile-info" ng-click ='openModal(2)'>
- 		<img id="profile-image" src={{user.photoUrl}}>
+ 		<img id="profile-image" ng-src="{{user.photoUrl}}" imageonload />
  		
  		<h3 id="profile-name">{{user.nickName}}</h3>
  	</div>
@@ -15,7 +15,7 @@
 		Name:   <div class="post-time">{{user.nickName}}</div>
 	</ion-item>
 	<ion-item ng-click='openModal(1)'>
-	Phone Number: <div class="post-time">{{user.phoneNumber}}</div>
+	Phone Number: <div class="post-time" ui-mask="{{'(999) 999-9999'}}" >{{user.phoneNumber}}</div>
 	</ion-item>
 </ion-list>
 </div>
@@ -73,14 +73,12 @@
 <script id="changePicModal.html" type="text/ng-template">
 	<div class="modal image-modal ">
 		<ion-content>
-			<div style= "padding-left:10px;padding-right:10px;">
 				<ion-list style = "height:1000;"> 
-					<ion-item ng-click='showImage()' text-center> View Profile Picture</ion-item>
-					<ion-item ng-click = 'takePicture()' text-center> Take Photo</ion-item>
-					<ion-item ng-click = 'choose()' text-center> Upload Photo</ion-item>
-					<ion-item ng-click = 'closeModal(2)' text-center> Cancel</ion-item>
+					<ion-item ng-click='showImage()' style = "text-align: center;"> View Profile Picture</ion-item>
+					<ion-item ng-click = 'takePicture()' style = "text-align: center;"> Take Photo</ion-item>
+					<ion-item ng-click = 'choose()' style = "text-align: center;"r> Upload Photo</ion-item>
+					<ion-item ng-click = 'closeModal(2)' style = "text-align: center;"> Cancel</ion-item>
 				</ion-list>
-				</div>
 			</div>
 		</ion-content>
 	</ion-modal-view>
@@ -89,7 +87,7 @@
 
 <!-- script for Show image -->
 <script id="imageModal.html" type="text/ng-template">
-              <div class="modal image-modal transparent" ng-click="closeModal(3)">
+              <div class="modal  fullscreen-image" ng-click="closeModal(3)">
                   <ion-pane class="transparent">
                      <img ng-src="{{imageSrc}}" class="fullscreen-image"/>
                   </ion-pane>

@@ -26,6 +26,10 @@ module.exports = {
     restaurant:{
       model:  'Restaurant',
       via : 'owner'
+    },
+    favoriteRestaurant:{
+      collection: 'Restaurant',
+      via: 'follower'
     }
   }),
   

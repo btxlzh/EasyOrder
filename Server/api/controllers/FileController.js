@@ -24,7 +24,7 @@ upload: function  (req, res) {
 	    																		
 	    	if (err) return res.serverError(err);								
 	    	//	IF ERROR Return and send 500 error with error
-	    	res.json({status:200,file:files});
+	    	return res.json({status:200});
 	    });
 
 }

@@ -19,7 +19,6 @@ angular.module('starter.services', [])
         return $http.get('http://localhost:1337/restaurant/'+id)
             .then(
                   function(resp){
-                    console.log(resp.data);
                     dataFactory.restaurant = resp.data;
                     return resp.data;
                   },function (err){
@@ -27,7 +26,20 @@ angular.module('starter.services', [])
                   }
             );
       }
-
+      dataFactory.getFavoriateRestaurant = function(){
+        console.log("getFavoriateRestaurant is called ");
+        return $http.get('http://localhost:1337/User/getFavorite?user='+ AccountService.user.id)
+            .then(
+                  function(resp){
+                    console.log(resp.data);
+                    dataFactory.favoriteRestaurants = resp.data[0].favoriteRestaurant;
+                    //console.log("dataFactory.favoriteRestaurant: "+dataFactory.favoriteRestaurant);
+                    return resp.data;
+                  },function (err){
+                    return err;
+                  }
+            );
+      }
       dataFactory.getMenu = function(id){
         return $http.get('http://localhost:1337/menu/'+id+'/all')
             .then(
@@ -63,19 +75,28 @@ angular.module('starter.services', [])
 
         if(dish.id in dataFactory.dish_map){
               index =dataFactory.dish_map[dish.id];
+<<<<<<< HEAD
           dataFactory.cart[index].num+=num;
                 // console.log("add exist");
                 //  console.log(Cart.dishes);
+=======
+          dataFactory.dishes[index].num+=num;
+>>>>>>> xuke
 
         }else {
 
           dish.num=num;
           //push new
+<<<<<<< HEAD
           dataFactory.dish_map[dish.id]=dataFactory.cart.length;
           dataFactory.cart.push(dish);
            // console.log("new add");
            // console.log(Cart.dishes);
            // console.log(Cart.dish_map);
+=======
+          dataFactory.dish_map[dish.id]=dataFactory.dishes.length;
+          dataFactory.dishes.push(dish);
+>>>>>>> xuke
         }
         return ;
       }
@@ -186,6 +207,54 @@ angular.module('starter.services', [])
                 }
           );
       }
+      AccountFactory.checkLogin =function($scope,$state,$ionicHistory){
+        return AccountFactory.getUser().then(function(data){
+            $scope.user=data;
+            var x= true;
+            return x;
+          },function(err){
+              $ionicHistory.nextViewOptions({
+                disableAnimate: true,
+                disableBack: true
+            });
+          $state.go('tab.login');
+           var x= false;
+          return x;
+      })
+      }
+      AccountFactory.addToFavorite = function(restaurant_id){
+        var requestData={};
+        requestData.user = AccountFactory.user.id;
+        requestData.restaurant = restaurant_id;
+        return $http.post('http://localhost:1337/user/addToFavorite',requestData, {
+            headers: { 'Content-Type': 'application/json'}
+        }).then(
+                      function(resp){
+                        console.log("addToFavorite: "+resp.data[0]);
+                        return resp.data;
+                      },function (err){
+                        console.log(err);
+                        return err;
+                      }
+                );
+      }
+      AccountFactory.deleteFromFavorite = function(restaurant_id){
+        var requestData={};
+        requestData.user = AccountFactory.user.id;
+        requestData.restaurant = restaurant_id;
+        return $http.post('http://localhost:1337/user/deleteFromFavorite',requestData, {
+            headers: { 'Content-Type': 'application/json'}
+        }).then(
+                      function(resp){
+                        console.log("delete favorite: "+resp.data[0]);
+                        return resp.data;
+                      },function (err){
+                        console.log(err);
+                        return err;
+                      }
+                );
+      }
+
       return AccountFactory;
   })
 .factory('ErrorService',function($ionicPopup){

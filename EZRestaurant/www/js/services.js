@@ -97,7 +97,6 @@ angular.module('starter.services', [])
                 }
           );
       }
-<<<<<<< HEAD
       AccountFactory.editDish = function(id,att,val){
           return $http.get("http://localhost:1337/dish/update/"+ id+"?"+att+'='+val)
           .then(

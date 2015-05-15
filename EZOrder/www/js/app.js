@@ -10,6 +10,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
   $httpProvider.defaults.withCredentials = true;
 }])
 .run(function($ionicPlatform) {
+
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -22,7 +23,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
     }
   });
 })
-
+.directive('imageonload', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            element.bind('load', function() {
+               // alert("file loaded ");
+            });
+        }
+    };
+})
 .config(function($stateProvider, $urlRouterProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
@@ -134,6 +144,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
     }
   }
   })
+   .state('tab.favorite', {
+    url: '/account/favorite',
+    views: {
+      'tab-account': {
+        templateUrl: 'templates/favorite.html',
+        controller: 'favoriteCtrl',
+      }
+    }
+    })
+
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/search');
