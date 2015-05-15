@@ -59,7 +59,6 @@ angular.module('starter.services', [])
                 );
       }
       dataFactory.getFavoriateRestaurant = function(){
-        console.log("getFavoriateRestaurant is called ");
         return $http.get('http://localhost:1337/User/getFavorite?user='+ AccountService.user.id)
             .then(
                   function(resp){
