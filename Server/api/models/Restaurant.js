@@ -17,6 +17,10 @@ module.exports = {
     owner :{
     	model: 'User',
     	via:'restaurant'
+    },
+    follower:{
+      collection: 'User',
+      via: 'favoriteRestaurant'
     }
   }
 };

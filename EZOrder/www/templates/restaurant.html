@@ -6,7 +6,6 @@
 -->
 <ion-view view-title="  {{restaurant.name}}">
   <ion-content class="padding">
-    
     <p>
       <h4>Basic Information</h4>
       <div class="list card">
@@ -28,7 +27,7 @@
           </p>
         </a>
       </div>
-
+      <button class="button icon ion-heart custom-icon" style = "color: {{color}};" ng-click = "addToFavorite()"></button>
       <h4>Menus</h4>
       <div class="list card">
         <a class="item item-icon-left" href="#tab/menu/{{restaurant.menu}}">

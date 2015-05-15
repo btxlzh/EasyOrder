@@ -31,16 +31,7 @@ AccountService.login($scope.postData).then(function(data){
 .controller('AccountCtrl', function($scope,$http,$state,$ionicHistory,AccountService,LocalStorage) {
   
   $scope.$on('$ionicView.beforeEnter', function(){
-    AccountService.getUser().then(function(data){
-        $scope.user=data;
-        console.log(data);
-    },function(err){
-        $ionicHistory.nextViewOptions({
-            disableAnimate: true,
-            disableBack: true
-          });
-        $state.go('tab.login');
-    })
+   AccountService.checkLogin($scope,$state,$ionicHistory);
   });
   $scope.logout = function(){
     AccountService.logout()
@@ -50,9 +41,23 @@ AccountService.login($scope.postData).then(function(data){
    });
   }
 })
-.controller("RestaurantCtrl",function($scope,$http, restaurant_data,ErrorService) {
+.controller("RestaurantCtrl",function($scope,$http, DataService,restaurant_data,ErrorService,AccountService,$ionicHistory,$state) {
   $scope.restaurant = restaurant_data;
-  console.log(restaurant_data);
+  $scope.color = "black";
+  $scope.addToFavorite = function(){
+    AccountService.checkLogin($scope,$state,$ionicHistory).then(function(data){
+      if(data == true){
+        if($scope.color == "black"){
+            $scope.color = "red";
+            AccountService.addToFavorite(restaurant_data.id);
+        }else{
+            $scope.color = "black";
+            AccountService.deleteFromFavorite(restaurant_data.id);
+        }
+      }
+    },function(error){
+    });
+  }
 
 })
 .controller("RestaurantMenuCtrl",function($scope,$http, menu_data,ErrorService) {
@@ -93,7 +98,7 @@ AccountService.login($scope.postData).then(function(data){
     };
  
 })
-.controller("ProfileCtrl",function($scope,$http,$state,AccountService,$ionicModal,$ionicHistory,uploadFile,$cordovaCamera, $cordovaImagePicker,$timeout, $cordovaFile){
+.controller("ProfileCtrl",function($scope,$http,$state,AccountService, $timeout,$ionicLoading,$ionicModal,$ionicHistory,$cordovaCamera,$ionicBackdrop){
     $scope.$on('$ionicView.beforeEnter', function(){
     AccountService.getUser().then(function(data){
         $scope.user=data;
@@ -106,6 +111,7 @@ AccountService.login($scope.postData).then(function(data){
         $state.go('tab.login');
     })
   });
+
     var serverURL = "http://localhost:1337/file/upload";
     $scope.takePicture = function() {
       var options = {
@@ -140,11 +146,8 @@ AccountService.login($scope.postData).then(function(data){
       window.resolveLocalFileSystemURI(imageURI, function(fileEntry) {
         $scope.picData = fileEntry.nativeURL;
         $scope.ftLoad = true;
-        //var image = document.getElementById('myImage');
-        
         upload(fileEntry.nativeURL);
         });
-      $ionicLoading.show({template: 'Loading', duration:500});
     },
     function(err){
       $ionicLoading.show({template: 'Error', duration:500});
@@ -157,13 +160,20 @@ AccountService.login($scope.postData).then(function(data){
           console.log("Code = " + r.responseCode);
           console.log("Response = " + r.response);
           console.log("Sent = " + r.bytesSent);
-          $scope.modalPic.hide();
-          AccountService.editUser('photoUrl',baseURL+$scope.user.id+"_profile.jpg").then(function(data){
-            $scope.user.photoUrl = baseURL+$scope.user.id+"_profile.jpg";
-
-          });
+               $scope.modalPic.hide();
+            $ionicLoading.show({
+              content: 'Loading',
+              animation: 'fade-in',
+              showBackdrop: true,
+              maxWidth: 200,
+              showDelay: 0
+            });
+     $timeout(function () {
+          $ionicLoading.hide();
+             $scope.user.photoUrl = baseURL+$scope.user.id+"_profile.jpg?"+new Date().getTime();
+        }, 2000);
+         
       }
-
       var fail = function (error) {
           alert("An error has occurred: Code = " + error.code);
           console.log("upload error source " + error.source);
@@ -195,7 +205,6 @@ AccountService.login($scope.postData).then(function(data){
     $ionicModal.fromTemplateUrl('changeNameModal.html', {
       scope: $scope,
       animation: 'slide-in-up',
-      backdropClickToClose : true
     }).then(function(modal) {
       $scope.modalName = modal
     })  
@@ -203,18 +212,16 @@ AccountService.login($scope.postData).then(function(data){
     $ionicModal.fromTemplateUrl('changePhoneModal.html', {
       scope: $scope,
       animation: 'slide-in-up',
-      backdropClickToClose : true
     }).then(function(modal) {
       $scope.modalPhone = modal
     })  
     $ionicModal.fromTemplateUrl('changePicModal.html', {
       scope: $scope
-
     }).then(function(modal) {
       $scope.modalPic = modal
     })  
     $ionicModal.fromTemplateUrl('imageModal.html', {
-      scope: $scope,
+      scope: $scope
     }).then(function(modal) {
       $scope.modalImage = modal
     })  
@@ -271,4 +278,20 @@ AccountService.login($scope.postData).then(function(data){
       $scope.modalPic.remove();
       $scope.modalImage.remove();
     });
-}); 
+})
+
+.controller("favoriteCtrl",function($scope,$http,$state,DataService,AccountService, $timeout,$ionicLoading,$ionicModal,$ionicHistory,$cordovaCamera,$ionicBackdrop){
+  $scope.$on('$ionicView.beforeEnter', function(){
+    AccountService.checkLogin($scope,$state,$ionicHistory).then( function(data){
+        if(data == true){
+            DataService.getFavoriateRestaurant().then(function (resp_data) {
+            $scope.restaurants = DataService.favoriteRestaurants;
+            }, function (err) {
+              ErrorService.popUp("unable to get favoriteRestaurants from server");
+            });
+        }
+      },function(error){
+      //error
+    });
+  }); 
+});
