@@ -9,7 +9,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
 .config(['$httpProvider', function($httpProvider) {
   $httpProvider.defaults.withCredentials = true;
 }])
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform,AccountService) {
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -21,6 +21,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
       // org.apache.cordova.statusbar required
       StatusBar.styleLightContent();
     }
+    AccountService.getUser();
   });
 })
 .directive('imageonload', function() {
