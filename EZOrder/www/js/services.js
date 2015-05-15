@@ -26,6 +26,18 @@ angular.module('starter.services', [])
                   }
             );
       }
+        dataFactory.isFavorite = function(restaurant_id){
+          return $http.get('http://localhost:1337/user/isFavorite?user='+AccountService.user.id+"&restaurant="+restaurant_id)
+            .then(
+                  function(resp){
+                    console.log(resp.data);
+                    return resp.data;
+                  },function (err){
+                    console.log(err);
+                    return err;
+                  }
+            );
+        }
        dataFactory.addToFavorite = function(restaurant_id){
         var requestData={};
         requestData.user = AccountService.user.id;
