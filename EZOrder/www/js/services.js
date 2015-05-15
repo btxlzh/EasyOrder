@@ -26,6 +26,38 @@ angular.module('starter.services', [])
                   }
             );
       }
+       dataFactory.addToFavorite = function(restaurant_id){
+        var requestData={};
+        requestData.user = AccountService.user.id;
+        requestData.restaurant = restaurant_id;
+        return $http.post('http://localhost:1337/user/addToFavorite',requestData, {
+            headers: { 'Content-Type': 'application/json'}
+        }).then(
+                      function(resp){
+                        console.log("addToFavorite: "+resp.data);
+                        return resp.data;
+                      },function (err){
+                        console.log(err);
+                        return err;
+                      }
+                );
+      }
+      dataFactory.deleteFromFavorite = function(restaurant_id){
+        var requestData={};
+        requestData.user = AccountService.user.id;
+        requestData.restaurant = restaurant_id;
+        return $http.post('http://localhost:1337/user/deleteFromFavorite',requestData, {
+            headers: { 'Content-Type': 'application/json'}
+        }).then(
+                      function(resp){
+                        console.log("delete favorite: "+resp.data);
+                        return resp.data;
+                      },function (err){
+                        console.log(err);
+                        return err;
+                      }
+                );
+      }
       dataFactory.getFavoriateRestaurant = function(){
         console.log("getFavoriateRestaurant is called ");
         return $http.get('http://localhost:1337/User/getFavorite?user='+ AccountService.user.id)
@@ -207,39 +239,7 @@ angular.module('starter.services', [])
           return x;
       })
       }
-      AccountFactory.addToFavorite = function(restaurant_id){
-        var requestData={};
-        requestData.user = AccountFactory.user.id;
-        requestData.restaurant = restaurant_id;
-        return $http.post('http://localhost:1337/user/addToFavorite',requestData, {
-            headers: { 'Content-Type': 'application/json'}
-        }).then(
-                      function(resp){
-                        console.log("addToFavorite: "+resp.data[0]);
-                        return resp.data;
-                      },function (err){
-                        console.log(err);
-                        return err;
-                      }
-                );
-      }
-      AccountFactory.deleteFromFavorite = function(restaurant_id){
-        var requestData={};
-        requestData.user = AccountFactory.user.id;
-        requestData.restaurant = restaurant_id;
-        return $http.post('http://localhost:1337/user/deleteFromFavorite',requestData, {
-            headers: { 'Content-Type': 'application/json'}
-        }).then(
-                      function(resp){
-                        console.log("delete favorite: "+resp.data[0]);
-                        return resp.data;
-                      },function (err){
-                        console.log(err);
-                        return err;
-                      }
-                );
-      }
-
+    
       return AccountFactory;
   })
 .factory('ErrorService',function($ionicPopup){

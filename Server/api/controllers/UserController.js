@@ -16,28 +16,29 @@ module.exports = require('waterlock').actions.user({
     addToFavorite: function(req, res){
     	var user = req.param('user');
     	var rest = req.param('restaurant');
+    	console.log(req.params.all());
     	User.find({id:user}).exec(function(err,r){
     		if(err) return res.send("err");
     		r[0].favoriteRestaurant.add(rest);
+    		var msg ="succ";
     		r[0].save(function (err) {
-    			return res.send(err);
+    			msg = "err";
     		});
-    		return r;
-
+    		return res.send(msg);
     	});
     },
     deleteFromFavorite: function(req, res){
     	var user = req.param('user');
     	var rest = req.param('restaurant');
+    	console.log(req.params.all());
     	User.find({id:user}).exec(function(err,r){
     		if(err) return res.send("err");
     		r[0].favoriteRestaurant.remove(rest);
+    		var msg ="succ";
     		r[0].save(function (err) {
-    			return res.send(err);
+    			msg = "err";
     		});
-    			console.log(r);
-    		return res.send(r);
-
+    		return res.send(msg);
     	});
     },
   	getFavorite: function(req, res){
@@ -46,7 +47,7 @@ module.exports = require('waterlock').actions.user({
     	User.find({id:user}).populate('favoriteRestaurant').exec(function(err,r){
     		if(err) return res.send("err");
     		console.log(r);
-    		  	return r;
+    		  	return res.send(r);
     	});
   	}
 });
