@@ -26,6 +26,9 @@ angular.module('starter.services', [])
                   }
             );
       }
+        dataFactory.isFavorite = function(restaurant_id){
+          
+        }
        dataFactory.addToFavorite = function(restaurant_id){
         var requestData={};
         requestData.user = AccountService.user.id;

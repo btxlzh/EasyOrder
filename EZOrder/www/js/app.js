@@ -73,17 +73,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
     resolve : {
         restaurant_data : function(DataService,$stateParams) {
                 return DataService.getRestaurant($stateParams.id);
-        },
-        FavoriateRestaurants : function(DataService) {
-                return DataService.getFavoriateRestaurant().then(function(data){
-                  console.log("here"+data);
-                  return data;
-                },function(err){
-                  console.log("err"+err);
-                  return err;
-                });
         }
-        
     }
     
   })
