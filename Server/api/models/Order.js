@@ -11,7 +11,7 @@ module.exports = {
   	user: {
   		model: 'User',
   	},
-  	orderDetail:{
+  	dishes:{
   		type: 'array',
   	},
   	restaurant:{

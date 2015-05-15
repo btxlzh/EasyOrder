@@ -6,11 +6,80 @@
 -->
 <ion-view view-title="  {{dish.name}}">
   <ion-content class="padding">
-    
-    <p>
-          {{dish.name}}
-          {{dish.price}}
-          {{dish.description}}
-    </p>
+    <ion-list>
+      <ion-item ng-click='openModal(0)'>
+        Name:   <div class="post-time">{{dish.name}}</div>
+      </ion-item>
+      <ion-item ng-click='openModal(1)'>
+        price: <div class="post-time">{{dish.price}}</div>
+      </ion-item>
+       <ion-item ng-click='openModal(2)'>
+        Descripthon: <div class="post-time">{{dish.description}}</div>
+      </ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>
+
+<script id="changeNameModal.html" type="text/ng-template">
+  <div class="modal ">
+    <ion-header-bar>
+    <h1 class="title">Change Name</h1>
+    </ion-header-bar>
+
+    <ion-content>
+      <div style= "padding-left:10px;padding-right:10px;">
+        <div class="list list-inset">
+          <label class="item item-input">
+            <input type="text" placeholder="new Name" ng-model="newName">
+          </label>
+        </div>
+        <div class="button-bar " >
+          <button class="button button-light" ng-click="changeName(newName)">Done</button>
+          <button class="button button-light" ng-click="closeModal(0)">Cancel</button>
+        </div>
+      </div>
+    </ion-content>
+  </div>
+</script>
+<script id="changePriceModal.html" type="text/ng-template">
+  <div class="modal ">
+    <ion-header-bar>
+    <h1 class="title">Change Price</h1>
+    </ion-header-bar>
+
+    <ion-content>
+      <div style= "padding-left:10px;padding-right:10px;">
+        <div class="list list-inset">
+          <label class="item item-input">
+            <input type="number" placeholder="new Price" ng-model="newPrice">
+          </label>
+        </div>
+        <div class="button-bar " >
+          <button class="button button-light" ng-click="changePrice(newPrice)">Done</button>
+          <button class="button button-light" ng-click="closeModal(1)">Cancel</button>
+        </div>
+      </div>
+    </ion-content>
+  </div>
+</script>
+<script id="changeDescriptionModal.html" type="text/ng-template">
+  <div class="modal ">
+    <ion-header-bar>
+    <h1 class="title">Change Descripthon</h1>
+    </ion-header-bar>
+
+    <ion-content>
+      <div style= "padding-left:10px;padding-right:10px;">
+        <div class="list list-inset">
+          <label class="item item-input">
+            <textarea rows="4" placeholder="new Descripthon" ng-model="newDescripthon"/>
+          </label>
+        </div>
+        <div class="button-bar " >
+          <button class="button button-light" ng-click="changeDescripthon(newDescripthon)">Done</button>
+          <button class="button button-light" ng-click="closeModal(2)">Cancel</button>
+        </div>
+      </div>
+    </ion-content>
+  </div>
+</script>

@@ -6,14 +6,15 @@
 -->
 <ion-view view-title="  {{restaurant.name}}">
   <ion-content class="padding">
-    <p>
-      <ul class="list" ng-repeat="dish in menu.dishes">
-        <li class="item" >
+      <ion-list class ='list card'>
+      <ion-item ng-repeat="dish in menu.dishes">
           <a href="#tab/dish/{{dish.id}}">
-            {{dish.name}}
+            
+              <img src="{{dish.image_url}}">
+              <h2>{{dish.name}}</h2>
+
           </a>
-        </li>
-      </ul>
-    </p>
+       </ion-item>
+      </ion-list>
   </ion-content>
 </ion-view>

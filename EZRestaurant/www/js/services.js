@@ -1,4 +1,8 @@
 angular.module('starter.services', [])
+.factory('OrderService',function($http,$ionicHistory,$q,LocalStorage){
+    var OrderFactory= {};
+    return OrderFactory;
+})
 .factory('AccountService',function($http,$ionicHistory,$q,LocalStorage){
       var AccountFactory= {};
       AccountFactory.user =null;
@@ -16,7 +20,7 @@ angular.module('starter.services', [])
                   var promise2= AccountFactory.getToken();
                    
                   $q.all([promise1,promise2]).then(function(){
-                    return ;
+                    return true;
                   });
           })
       }
@@ -40,9 +44,6 @@ angular.module('starter.services', [])
          console.log('gerUser Start!');
          var d = $q.defer();
         if(AccountFactory.user){
-          console.log(AccountFactory.user);
-          console.log("res");
-          console.log(AccountFactory.restaurant);
           if(AccountFactory.restaurant){
             d.resolve(AccountFactory.restaurant);
           }
@@ -60,6 +61,7 @@ angular.module('starter.services', [])
             d.reject('No local token');
           }else{
               var obj = LocalStorage.getObj('EZ_LOCAL_TOKEN');
+              console.log(obj);
               if(obj){
                 $http.get("http://localhost:1337/auth/loginWithToken?access_token="+obj)
                 .then(
@@ -94,6 +96,28 @@ angular.module('starter.services', [])
                     return resp.data;
                 }
           );
+      }
+      AccountFactory.editDish = function(id,att,val){
+          return $http.get("http://localhost:1337/dish/update/"+ id+"?"+att+'='+val)
+          .then(
+                function(resp){
+                    return resp.data;
+                }
+          );
+      }
+      AccountFactory.editRestaurant = function(id,att,val){
+          return $http.get("http://localhost:1337/Restaurant/update/"+ id+"?"+att+'='+val)
+          .then(
+                function(resp){
+                    return resp.data;
+                }
+          );
+        }
+          
+      AccountFactory.getQRSrc = function(){
+	  console.log(AccountFactory.user.restaurant);
+          return "http://localhost:1337/restaurant/getQRcode?id=" + AccountFactory.user.restaurant;
+
       }
       AccountFactory.createDish=function(menu_id){
           return $http.get("http://localhost:1337/dish/createDish?owner="+menu_id)
@@ -167,6 +191,18 @@ angular.module('starter.services', [])
                   }
             );
       }
+      AccountFactory.getOrder = function(id){
+        return $http.get('http://localhost:1337/order/'+id)
+            .then(
+                  function(resp){
+                    return resp.data;
+                  },function (err){
+                    console.log(err);
+                    return err;
+                  }
+            );
+      }
+      
       return AccountFactory;
   })
 .factory('ErrorService',function($ionicPopup){

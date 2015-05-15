@@ -1,9 +1,11 @@
 angular.module('starter.controllers',  ['ionic', 'ngCordova'])
 
 .controller('CartCtrl', function($scope, DataService,LocalStorage) {
-  $scope.dishes = DataService.dishes;
+  $scope.dishes = DataService.cart;
   $scope.checkout=function(){
-    DataService.checkout();
+    DataService.checkout().then(function(resp){
+      DataService.cart.length=0;
+    });
   }
 })
 

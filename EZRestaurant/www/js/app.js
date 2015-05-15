@@ -90,9 +90,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
           }
     },
     resolve : {
-         menu_data : function(AccountService,$stateParams) {
-                return AccountService.getMenu($stateParams.id);
-        }
+
     },
   })
   .state('tab.restaurant', {
@@ -118,7 +116,20 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','l
         templateUrl: 'templates/login.html',
         controller: 'LoginCtrl'
   })
-
+  .state('tab.qrcode', {
+    url: '/qrcode/:id',
+    views: {
+       'tab-restaurant': {
+            templateUrl: 'templates/qrcode.html',
+            controller: 'RestaurantQRCodeCtrl', 
+          }
+    },
+    resolve : {
+         menu_data : function(AccountService,$stateParams) {
+                return AccountService.getMenu($stateParams.id);
+        }
+    },
+  })
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/restaurant');
