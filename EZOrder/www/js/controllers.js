@@ -44,13 +44,13 @@ AccountService.login($scope.postData).then(function(data){
   }
 })
 .controller("RestaurantCtrl",function($scope,$http, DataService,restaurant_data,ErrorService,AccountService,$ionicHistory,$state) {
-  scope.$on('$ionicView.beforeEnter', function(){
+  $scope.$on('$ionicView.beforeEnter', function(){
     $scope.restaurant = restaurant_data;
     if(AccountService.user == null){
       $scope.color = "black";
     }else{
       DataService.isFavorite(restaurant_data.id).then(function(data){
-        if(data == true){
+        if(data == 'succ'){
           $scope.color = "red";
         }else{
           $scope.color = "black";
@@ -63,10 +63,10 @@ AccountService.login($scope.postData).then(function(data){
       if(data == true){
         if($scope.color == "black"){
             $scope.color = "red";
-            AccountService.addToFavorite(restaurant_data.id);
+            DataService.addToFavorite(restaurant_data.id);
         }else{
             $scope.color = "black";
-            AccountService.deleteFromFavorite(restaurant_data.id);
+            DataService.deleteFromFavorite(restaurant_data.id);
         }
       }
     },function(error){

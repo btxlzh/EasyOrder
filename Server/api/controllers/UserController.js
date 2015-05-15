@@ -49,5 +49,18 @@ module.exports = require('waterlock').actions.user({
     		console.log(r);
     		  	return res.send(r);
     	});
+  	},
+  	isFavorite: function(req, res){
+  		var user = parseInt(req.param('user'));
+    	var rest = parseInt(req.param('restaurant'));
+    	User.find({id:user}).populate('favoriteRestaurant',{id:rest}).exec(function(err,r){
+    		if(err) return res.send("err");
+    		console.log(r);
+    		console.log(r[0].favoriteRestaurant.length);
+    		if(r[0].favoriteRestaurant.length >0)
+    			return res.send("succ");
+    		else
+    			return res.send("fail");
+    	})
   	}
 });
