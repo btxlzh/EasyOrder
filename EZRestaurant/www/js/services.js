@@ -97,6 +97,7 @@ angular.module('starter.services', [])
                 }
           );
       }
+<<<<<<< HEAD
       AccountFactory.editDish = function(id,att,val){
           return $http.get("http://localhost:1337/dish/update/"+ id+"?"+att+'='+val)
           .then(
@@ -112,6 +113,11 @@ angular.module('starter.services', [])
                     return resp.data;
                 }
           );
+          
+      AccountFactory.getQRSrc = function(){
+	  console.log(AccountFactory.user.restaurant);
+          return "http://localhost:1337/restaurant/getQRcode?id=" + AccountFactory.user.restaurant;
+
       }
       AccountFactory.createDish=function(menu_id){
           return $http.get("http://localhost:1337/dish/createDish?owner="+menu_id)

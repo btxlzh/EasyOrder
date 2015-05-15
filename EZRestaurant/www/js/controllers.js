@@ -120,6 +120,13 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
 }
 })
 
+
+
+
+
+.controller("RestaurantQRCodeCtrl",function($scope, AccountService) {
+  $scope.qrSrc = AccountService.getQRSrc();
+})
 .controller("RestaurantMenuCtrl",function( $q,$scope,$state,$http,$stateParams,menu_data,ErrorService,AccountService) {
    $scope.$on('$ionicView.beforeEnter', function(){
     AccountService.getMenu($stateParams.id).then(function(data){
@@ -128,7 +135,6 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
     },function(err){
     })
   });
-
   $scope.listCanSwipe=true;
   $scope.add=function(){
     AccountService.createDish(AccountService.menu.id).then(function callback(data){
@@ -235,6 +241,6 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
               $scope.$digest();
             }
   });
-    
+
  
 });
