@@ -216,11 +216,12 @@ angular.module('starter.services', [])
             console.log('No local token');
             d.reject('No local token');
           }else{
-            LocalStorage.getObj('EZ_LOCAL_TOKEN',function(data){
-                $http.get("http://localhost:1337/auth/loginWithToken?access_token="+data.token)
+            LocalStorage.get('EZ_LOCAL_TOKEN',function(data){
+              if(data){
+                $http.get("http://localhost:1337/auth/loginWithToken?access_token="+data)
                 .then(
                       function(resp){
-                           console.log('GET User by login with token'+data.token);
+                           console.log('GET User by login with token'+data);
                           AccountFactory.setUser(resp.data); 
                             d.resolve(resp.data);
                       },function (err){
@@ -229,6 +230,7 @@ angular.module('starter.services', [])
                            d.reject('Error local token');
                       }
                  );
+              }
             });
             
           }

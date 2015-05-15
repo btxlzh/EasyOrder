@@ -30,6 +30,7 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
   $scope.$on('$ionicView.beforeEnter', function(){
     AccountService.getUser().then(function(data){
         $scope.restaurant = data;
+        console.log(data);
     },function(err){
         $ionicHistory.nextViewOptions({
             disableAnimate: true,
@@ -124,8 +125,10 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
 
 
 
-.controller("RestaurantQRCodeCtrl",function($scope, AccountService) {
-  $scope.qrSrc = AccountService.getQRSrc();
+.controller("RestaurantQRCodeCtrl",function($stateParams,$scope, AccountService) {
+  $scope.restaurant=AccountService.restaurant;
+  console.log(AccountService.restaurant);
+  $scope.qrSrc = AccountService.getQRSrc($stateParams.id);
 })
 .controller("RestaurantMenuCtrl",function( $q,$scope,$state,$http,$stateParams,ErrorService,AccountService) {
    $scope.$on('$ionicView.beforeEnter', function(){

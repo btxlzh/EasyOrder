@@ -5,14 +5,23 @@ angular.module('localStorageServices', [])
     set: function(key, value) {
       $window.localStorage[key] = value;
     },
-    get: function(key, defaultValue) {
-      return $window.localStorage[key] || defaultValue;
+    get: function(key, callback) {
+      if(callback){
+        var data = $window.localStorage[key];
+        callback(data);
+      }else 
+      return $window.localStorage[key];
     },
     setObj: function(key, value) {
       $window.localStorage[key] = JSON.stringify(value);
     },
-    getObj: function(key) {
-      return JSON.parse($window.localStorage[key] || '{}');
+    getObj: function(key,callback) {
+      if(callback){
+        var data = JSON.parse($window.localStorage[key] || '{}');
+        callback(data);
+      }else {
+        return JSON.parse($window.localStorage[key] || '{}');
+      }
     },
     del : function(key) {
       delete $window.localStorage[key];

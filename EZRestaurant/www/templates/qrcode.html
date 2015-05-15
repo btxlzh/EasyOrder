@@ -8,6 +8,15 @@
 <ion-nav-buttons side="primary">
 </ion-nav-buttons>
 <ion-content>
-	<img style="-webkit-user-select: none" ng-src= {{qrSrc}}>
+	<div class="list card">
+		<div class="item item-icon-left">
+			<i class="icon ion-card"></i>
+   			 {{restaurant.name}}
+  		</div>
+		<div class="item item-image">
+    		<img src= {{qrSrc}}>
+  		</div>
+		
+	</div>
 </ion-content>
 </ion-view>
