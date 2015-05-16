@@ -165,7 +165,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     window.resolveLocalFileSystemURI(imageURI, function(fileEntry) {
                         $scope.picData = fileEntry.nativeURL;
                         $scope.ftLoad = true;
-                        uploadFile.upload($scope.user, uploadURL, fileEntry.nativeURL, success, fail);
+                        filename = $scope.user.id + "_profile.jpg";
+                        uploadFile.upload(uploadURL, fileEntry.nativeURL, filename, success, fail);
                     });
                 },
                 function(err) {

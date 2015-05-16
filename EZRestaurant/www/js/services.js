@@ -5,8 +5,7 @@ angular.module('starter.services', [])
     })
     .factory('FileService', function($http, $ionicHistory, $q, LocalStorage) {
         var FileFactory = {};
-        FileFactory.upload = function(fileURL, win, fail, id) {
-
+        FileFactory.upload = function(serverURL, fileURL, filename, success, fail) {
 
             var options = new FileUploadOptions();
             options.fileKey = "uploadFile";
@@ -14,19 +13,13 @@ angular.module('starter.services', [])
             options.mimeType = "text/plain";
 
             var params = {};
-            params.id = id;
+            params.filename = filename;
 
             options.params = params;
 
             var ft = new FileTransfer();
-            ft.onprogress = function(progressEvent) {
-                if (progressEvent.lengthComputable) {
-                    loadingStatus.setPercentage(progressEvent.loaded / progressEvent.total);
-                } else {
-                    loadingStatus.increment();
-                }
-            };
-            ft.upload(fileURL, encodeURI(serverURL), win, fail, options);
+            console.log("upload file called");
+            ft.upload(fileURL, encodeURI(serverURL), success, fail, options);
         }
         return FileFactory;
     })
@@ -161,6 +154,14 @@ angular.module('starter.services', [])
                     }
                 );
 
+        }
+        AccountFactory.addDishPic = function(dish_id, url) {
+            return $http.get("http://localhost:1337/dish/addPic?id=" + dish_id + "&url=" + url)
+                .then(
+                    function(resp) {
+                        return resp.data;
+                    }
+                );
         }
         AccountFactory.getMenu = function(id) {
             return $http.get('http://localhost:1337/menu/' + id + '/all')
