@@ -10,7 +10,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         $httpProvider.defaults.withCredentials = true;
     }])
     .constant('CONFIG', {
-        serverUrl: 'http://10.148.7.134:1337'
+        serverUrl: 'http://localhost:1337'
     })
     .run(function($ionicPlatform, AccountService) {
 

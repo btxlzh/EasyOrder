@@ -6,42 +6,36 @@
 -->
 <ion-view view-title="  {{restaurant.name}}">
     <ion-content class="padding">
-        <p>
-            <h4>Basic Information</h4>
-            <div class="list card">
-                <a class="item item-icon-left">
-                    <i class="icon ion-cash"></i> Price
+        <div class="list card">
+                <div class="item item-icon-left item-divider">
+                    <i class="icon ion-compose"></i> Basic Information
+                </div>
+                <div class="item item-icon-left">
+                    <i class="icon ion-fork"></i> Name
                     <span class="item-note">
-             {{restaurant.price}}
+             <h2>{{restaurant.name}}</h2>
           </span>
-                </a>
-                <a class="item item-icon-left" href="#">
-                    <i class="icon ion-compose"></i> Description
-                </a>
-                <a class="item item-body">
-                    <p style="margin:0px;">
-                        {{restaurant.description}}
-                    </p>
-                </a>
+                </div>
+                <div class="item item-icon-left" >
+                    <i class="icon ion-cash"></i> Average Cost
+                    <span class="item-note">
+             <h2>{{restaurant.price}}</h2>
+          </span>
+                </div>
             </div>
-            <button class="button icon ion-heart custom-icon" style="color: {{color}};" ng-click="addToFavorite()"></button>
-            <h4>Menus</h4>
+            <div class="list card">
+                <div class="item item-icon-left item-divider">
+                    <i class="icon ion-compose"></i> Description
+                </div>
+                <div class="item item-body item-text-wrap">
+                    <h3>{{restaurant.description}}</h3>
+                </div>
+            </div>
             <div class="list card">
                 <a class="item item-icon-left" href="#tab/menu/{{restaurant.menu}}">
                     <i class="icon ion-load-b"></i> Menu
                 </a>
             </div>
-            <h4>Photos</h4>
-            <ion-scroll zooming="true" direction="xy" style="width: 100%; height: 200px">
-                <!-- <div style="width: 5000px; height: 5000px; background: url('https://upload.wikimedia.org/wikipedia/commons/a/ad/Europe_geological_map-en.jpg') repeat"></div> -->
-                <div style="width: 1020px; height: 200px;">
-                    <img src="img/food1.jpg" style="height:200px; display:inline;"></img>
-                    <img src="img/food2.jpg" style="height:200px; display:inline;"></img>
-                    <img src="img/food3.jpg" style="height:200px; display:inline;"></img>
-                    <img src="img/food4.jpg" style="height:200px; display:inline;"></img>
-                    <img src="img/food5.jpg" style="height:200px; display:inline;"></img>
-                </div>
-            </ion-scroll>
         </p>
     </ion-content>
 </ion-view>

@@ -78,8 +78,10 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         }
 
     })
-    .controller("RestaurantMenuCtrl", function($scope, $http, menu_data, ErrorService) {
+    .controller("RestaurantMenuCtrl", function($scope, $http, menu_data, ErrorService,DataService) {
         $scope.menu = menu_data;
+        $scope.restaurant = DataService.restaurant;
+        console.log(DataService.restaurant);
 
     })
     .controller("RestaurantDishCtrl", function($scope, $http, dish_data, ErrorService, DataService) {

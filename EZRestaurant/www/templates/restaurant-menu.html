@@ -18,9 +18,9 @@
         </label>
     </div>
     <ion-content class="padding has-subheader">
-        <div>
-            <ion-list show-delete="shouldShowDelete" can-swipe="listCanSwipe">
-                <ion-item class="item item-thumbnail-left item" ng-repeat="dish in menu.dishes | filter:query" href="#tab/dish/{{dish.id}}">
+        <div class= "list card">
+            <ion-list  show-delete="shouldShowDelete" can-swipe="listCanSwipe">
+                <ion-item class="item item-thumbnail-left" ng-repeat="dish in menu.dishes | filter:query" href="#tab/dish/{{dish.id}}">
                     <img src={{dish.name}}>
                     <ion-delete-button class="ion-minus-circled" ng-click="delete($index)"></ion-delete-button>
                     <h2>{{dish.name}}</h2>

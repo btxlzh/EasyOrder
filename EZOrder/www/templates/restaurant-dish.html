@@ -4,13 +4,36 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-<ion-view view-title="  {{restaurant.name}}">
+<ion-view view-title="  {{dish.name}}">
     <ion-content class="padding">
-        <p>
-            {{dish.name}} {{dish.price}} {{dish.description}}
-            <button class="button button-light" ng-click="addToCart(dish,1)">
-                button-light
-            </button>
-        </p>
+      
+        <div class="item item-list-detail">
+            <ion-scroll zooming="true" direction="x">
+                <!-- <div style="width: 5000px; height: 5000px; background: url('https://upload.wikimedia.org/wikipedia/commons/a/ad/Europe_geological_map-en.jpg') repeat"></div> -->
+                <img src="img/food1.jpg" style="height:200px; display:inline;"></img>
+                <img src="img/food2.jpg" style="height:200px; display:inline;"></img>
+                <img src="img/food3.jpg" style="height:200px; display:inline;"></img>
+                <img src="img/food4.jpg" style="height:200px; display:inline;"></img>
+                <img src="img/food5.jpg" style="height:200px; display:inline;"></img>
+            </ion-scroll>
+        </div>
+        <ion-list>
+            <ion-item>
+                Name:
+                <span class="item-note">
+             <h2>{{dish.name}}</h2>
+          </span>
+            </ion-item>
+            <ion-item>
+                price:
+                <span class="item-note">
+             <h2>{{dish.price}}</h2>
+          </span>
+            </ion-item>
+            <ion-item>
+                Descripthon:
+                <div class="item-text-wrap">{{dish.description}}</div>
+            </ion-item>
+        </ion-list>
     </ion-content>
 </ion-view>
