@@ -86,8 +86,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     })
     .controller("RestaurantDishCtrl", function($scope, $http, dish_data, ErrorService, DataService) {
         $scope.dish = dish_data;
-        $scope.addToCart = function(dish, num) {
-            DataService.addToCart(dish, num);
+        $scope.addToCart = function(dish,num) {
+            DataService.addToCart(dish,num);
         }
 
     })

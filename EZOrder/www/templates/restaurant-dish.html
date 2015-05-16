@@ -5,8 +5,17 @@
   The Friends service returns an array of friend data
 -->
 <ion-view view-title="  {{dish.name}}">
-    <ion-content class="padding">
-      
+    <div class="bar bar-subheader item-input-inset">
+        <label class="item-input-wrapper">
+
+            <input type="text" ng-model="num" placeholder="Quantity">
+        </label>
+        <button class="button button-clear" ng-click="addToCart(dish,num)">
+                    Add to Cart
+        </button>
+    </div>
+    <ion-content class="padding has-subheader">
+
         <div class="item item-list-detail">
             <ion-scroll zooming="true" direction="x">
                 <!-- <div style="width: 5000px; height: 5000px; background: url('https://upload.wikimedia.org/wikipedia/commons/a/ad/Europe_geological_map-en.jpg') repeat"></div> -->
