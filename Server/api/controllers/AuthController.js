@@ -2,21 +2,21 @@
  * AuthController
  *
  * @module      :: Controller
- * @description	:: Provides the base authentication
+ * @description :: Provides the base authentication
  *                 actions used to make waterlock work.
  *
  * @docs        :: http://waterlock.ninja/documentation
  */
 
 module.exports = require('waterlock').waterlocked({
-    loginWithToken: function(req,res){
+    loginWithToken: function(req, res) {
         res.send(req.session.user);
     },
-    register: function(req,res){
+    register: function(req, res) {
         var params = req.params.all(),
-                        def = waterlock.Auth.definition,
-                        criteria = { },
-                        scopeKey = def.email !== undefined ? 'email' : 'username';
+            def = waterlock.Auth.definition,
+            criteria = {},
+            scopeKey = def.email !== undefined ? 'email' : 'username';
 
         var attr = {
             password: params.password
