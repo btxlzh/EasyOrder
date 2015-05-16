@@ -1,5 +1,35 @@
 angular.module('starter.controllers',  ['ionic', 'ngCordova'])
+.controller("OrderCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,ErrorService) {
+    $scope.orders=[];
+    $scope.listen = function(){
+      io.socket.get('/Order/listenOrder',function serverResponded (body, JWR) {
 
+          // JWR ==> "JSON WebSocket Response"
+          console.log('Sails responded with: ', body);
+          console.log('with headers: ', JWR.headers);
+          console.log('and with status code: ', JWR.statusCode);
+        });
+      }
+    io.socket.on('order', function onServerSentEvent (obj) {
+             if(obj.verb === 'created'){
+              console.log(obj.data);
+              $scope.orders.push(obj.data);
+              // Add the data to current chatList
+              // Call $scope.$digest to make the changes in UI
+              $scope.$digest();
+            }
+  });
+    $scope.confirm=function(index){
+      console.log($scope.orders[index].status);
+      $scope.orders[index].status="confirm";
+      console.log($scope.orders[index].status);
+    }
+    $scope.complete=function(index){
+      $scope.orders.splice(index,1)
+    }
+
+ 
+})
 
 
 .controller('OrderDetailCtrl', function($scope, $stateParams,AccountService) {
@@ -298,25 +328,4 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
     })
   };
 })
-.controller("OrderCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,ErrorService) {
-    $scope.orders=[];
-    $scope.listen = function(){
-      io.socket.get('/Order/listenOrder',function serverResponded (body, JWR) {
-
-          // JWR ==> "JSON WebSocket Response"
-          console.log('Sails responded with: ', body);
-          console.log('with headers: ', JWR.headers);
-          console.log('and with status code: ', JWR.statusCode);
-        });
-      }
-    io.socket.on('order', function onServerSentEvent (obj) {
-             if(obj.verb === 'created'){
-              $scope.orders.push(obj.data);
-              // Add the data to current chatList
-              // Call $scope.$digest to make the changes in UI
-              $scope.$digest();
-            }
-  });
-
- 
-});
+;

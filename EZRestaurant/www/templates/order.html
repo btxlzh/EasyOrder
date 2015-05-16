@@ -1,22 +1,32 @@
-<ion-view view-title="Orders">
-  <ion-content class="padding">
-  	<p>
+<ion-view view-title="Search">
+  <ion-content >
+  	<div>
+	  	<button class= "button button-stable button-block" ng-click="listen()">Open</button>
+	</div>
 	<ion-list >
-		<ion-item class="card" ng-repeat="order in orders">
+		<ion-item class="list card" ng-repeat="order in orders" href="#tab/order/{{order.id}}">
           <ion-delete-button class="ion-minus-circled" ng-click="delete($index)"></ion-delete-button>
-            <a href="#tab/order/{{order.id}}">
-              {{order.id}}
-            </a>
+            <h2>Table:{{order.table}}<h2>
+              <p>
+                  OrderID:{{order.id}}
+              </p>
+              <p>
+                  Totalprice:{{order.price}}
+              </p>
+              <span class="item-note">
+             <h2>{{order.status}}</h2>
+              </span>
+            <ion-option-button class="button-balanced"
+                             ng-click="confirm($index)">
+            Confirm
+            </ion-option-button>
             <ion-option-button class="button-assertive"
-                             ng-click="delete($index)">
-            Delete
+                             ng-click="complete($index)">
+            Complete
           </ion-option-button>
+          
         </ion-item>
 	</ion-list>
-  <div>
-      <button class= "button button-stable button-block" ng-click="listen()">Open</button>
-  </div>
-</p>
   </ion-content>
 </ion-view>
 
