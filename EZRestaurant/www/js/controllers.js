@@ -186,11 +186,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     .controller("RestaurantDishCtrl", function($scope, $http, dish_data, ErrorService, $ionicModal, AccountService, FileService, $cordovaCamera, $ionicLoading, $timeout) {
         $scope.dish = dish_data;
         $scope.baseURL = "http://localhost:1337/images/";
-        $scope.image_urls = [];
-        console.log("dish_data.image_urls.length: " + dish_data.image_urls.length);
-        for (var i = 0; dish_data.image_urls != null && i < dish_data.image_urls.length; i++) {
-            $scope.image_urls.push($scope.baseURL + dish_data.image_urls[i]);
-        }
         $ionicModal.fromTemplateUrl('changeNameModal.html', {
             scope: $scope,
             animation: 'slide-in-up',
