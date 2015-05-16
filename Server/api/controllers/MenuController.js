@@ -6,13 +6,14 @@
  */
 
 module.exports = {
-	getDetail:function(req,res){
-      thisId = req.param('id');
-      Menu.findOne({id:thisId})
-      .populate('dishes')
-      .exec(function findOneCB(err,found){
-        return res.send(found);
-      });
+    getDetail: function(req, res) {
+        thisId = req.param('id');
+        Menu.findOne({
+                id: thisId
+            })
+            .populate('dishes')
+            .exec(function findOneCB(err, found) {
+                return res.send(found);
+            });
     }
 };
-

@@ -1,27 +1,22 @@
 angular.module('starter.uploadFile', [])
-    .factory('uploadFile', function($http, $ionicHistory, $q, LocalStorage) {
-        var UploadFactory = {};
-        UploadFactory.upload = function(user, file) {
 
+.factory('uploadFile', function($http, $ionicHistory, $q, LocalStorage) {
+    var UploadFactory = {};
+    UploadFactory.upload = function(user, serverURL, fileURL, success, fail) {
 
-            var fd = new FormData();
-            //Take the first selected file
-            fd.append("file", file);
-            fd.append("id", user.id);
-            return $http.post('http://localhost:1337/file/upload', fd, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(
-                function(resp) {
-                    console.log(resp.data);
-                    return resp.data;
-                },
-                function(err) {
-                    console.log(err);
-                    return err;
-                }
-            );
-        }
-        return UploadFactory;
-    });
+        var options = new FileUploadOptions();
+        options.fileKey = "uploadFile";
+        options.fileName = fileURL.substr(fileURL.lastIndexOf('/') + 1);
+        options.mimeType = "text/plain";
+
+        var params = {};
+        params.id = user.id;
+
+        options.params = params;
+
+        var ft = new FileTransfer();
+        ft.upload(fileURL, encodeURI(serverURL), success, fail, options);
+    }
+
+    return UploadFactory;
+});

@@ -108,7 +108,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         };
 
     })
-    .controller("ProfileCtrl", function($scope, $http, $state, AccountService, $timeout, $ionicLoading, $ionicModal, $ionicHistory, $cordovaCamera, $ionicBackdrop) {
+    .controller("ProfileCtrl", function($scope, $http, $state, AccountService, uploadFile, CONFIG, $timeout, $ionicLoading, $ionicModal, $ionicHistory, $cordovaCamera, $ionicBackdrop) {
         $scope.$on('$ionicView.beforeEnter', function() {
             AccountService.getUser().then(function(data) {
                 $scope.user = data;
@@ -122,7 +122,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             })
         });
 
-        var serverURL = "http://localhost:1337/file/upload";
+        var uploadURL = CONFIG.serverUrl + "/file/upload";
         $scope.takePicture = function() {
             var options = {
                 quality: 50,
@@ -156,7 +156,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     window.resolveLocalFileSystemURI(imageURI, function(fileEntry) {
                         $scope.picData = fileEntry.nativeURL;
                         $scope.ftLoad = true;
-                        upload(fileEntry.nativeURL);
+                        uploadFile.upload($scope.user, uploadURL, fileEntry.nativeURL, success, fail);
                     });
                 },
                 function(err) {
@@ -166,16 +166,46 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     });
                 })
         };
+        var success = function(r) {
+            baseURL = CONFIG.serverUrl + "/images/";
+            alert("Code = " + r.responseCode);
+            alert("Response = " + r.response);
+            alert("Sent = " + r.bytesSent);
+            $scope.modalPic.hide();
+            $ionicLoading.show({
+                content: 'Loading',
+                animation: 'fade-in',
+                showBackdrop: true,
+                maxWidth: 200,
+                showDelay: 0
+            });
+            $timeout(function() {
+                $ionicLoading.hide();
+                $scope.user.photoUrl = baseURL + $scope.user.id + "_profile.jpg?" + new Date().getTime();
+                // if ($scope.user.photoUrl == "images/defaultPhoto.jpg") {
+                //     $scope.user.photoUrl = $scope.user.id + "_profile.jpg";
+                //     AccountService.editUser("photoUrl", "images/" + $scope.user.id + "_profile.jpg");
+                // }
 
-        upload =
+            }, 2000);
+
+        }
+        var fail = function(error) {
+            alert("An error has occurred: Code = " + error.code);
+            console.log("upload error source " + error.source);
+            console.log("upload error target " + error.target);
+            $scope.modalPic.hide();
+        }
 
 
-            $ionicModal.fromTemplateUrl('changeNameModal.html', {
-                scope: $scope,
-                animation: 'slide-in-up',
-            }).then(function(modal) {
-                $scope.modalName = modal
-            })
+
+
+        $ionicModal.fromTemplateUrl('changeNameModal.html', {
+            scope: $scope,
+            animation: 'slide-in-up',
+        }).then(function(modal) {
+            $scope.modalName = modal
+        })
 
         $ionicModal.fromTemplateUrl('changePhoneModal.html', {
             scope: $scope,
