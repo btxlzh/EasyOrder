@@ -9,23 +9,19 @@
   <ion-content class="padding">
      <div >
 
-      <ion-list  show-delete="shouldShowDelete" can-swipe="listCanSwipe">
-        <ion-item >
-        <ion-item class="item item-thumbnail-left item" ng-repeat="dish in order.dishes | filter:query" href="#tab/dish/{{dish.id}}">
+      <ion-list  show-delete="shouldShowDelete" can-swipe="true">
+        <ion-item class="item item-thumbnail-left item" ng-repeat="dish in order.dishes | filter:query">
 
           <img src={{dish.name}}>
-              <h2>{{dish.name}}</h2>
-              <h2>${{dish.price}}</h2>
-
-              <div class="item-text-wrap">
-                {{dish.description}}
-              </div>
-
+              <h2>Name: {{dish.name}}</h2>
+              <h2>Unit Price: ${{dish.price}}</h2>
+              <h2>Quantity: {{dish.num}}</h2>
+              <h2>Total Price: {{dish.price*dish.num}}
             <ion-option-button class="button-assertive"
                              ng-click="delete($index)">
             Delete
           </ion-option-button>
-                </ion-item>
+        </ion-item>
       </ion-list>
     </div>
   </ion-content>
