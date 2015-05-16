@@ -19,6 +19,8 @@ module.exports = {
         var id = req.param('id');
         var url = req.param("url");
         console.log(req.params.all());
+
+        var msg = "succ";
         Dish.find(id).exec(function(err, r) {
             if (err) return res.send(err);
             if (r[0].image_urls == null) {
@@ -26,9 +28,11 @@ module.exports = {
             }
             r[0].image_urls.push(url);
             r[0].save(function(err) {
-                return res.send(err);
+
+                msg = "err"
             });
-            return res.send("succ");
+            return res.send(msg);
+
         })
     }
 };
