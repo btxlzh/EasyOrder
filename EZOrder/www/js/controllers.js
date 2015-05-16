@@ -1,19 +1,40 @@
 angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
-.controller('CartCtrl', function($scope, DataService, LocalStorage) {
-   $scope.$on('$ionicView.beforeEnter', function() {
-    $scope.cart = DataService.cart;
-    console.log(DataService.cart);
-})
+.controller('CartCtrl', function($scope, DataService, LocalStorage, $ionicModal) {
+    $scope.$on('$ionicView.beforeEnter', function() {
+        $scope.cart = DataService.cart;
+        console.log(DataService.cart);
+    })
     $scope.checkout = function() {
         DataService.checkout().then(function(resp) {
             DataService.cart.length = 0;
-            DataService.cart={};
+            DataService.cart = {};
         });
     }
     $scope.delete = function(key) {
         delete DataService.cart[key];
     }
+    $ionicModal.fromTemplateUrl('changeQuantityModal.html', {
+        scope: $scope,
+        animation: 'slide-in-up',
+    }).then(function(modal) {
+        $scope.modalQuantity = modal
+    })
+    $scope.finishChangeQuantity = function(newQuntity) {
+        DataService.cart[$scope.key].num = newQuntity;
+        $scope.modalQuantity.hide();
+    }
+    $scope.openModal = function(key) {
+        $scope.key = key;
+        $scope.modalQuantity.show();
+    }
+    $scope.closeModal = function() {
+        $scope.modalQuantity.hide();
+    };
+
+    $scope.$on('$destroy', function() {
+        $scope.modalQuantity.remove();
+    });
 })
 
 .controller('LoginCtrl', function($q, $scope, $http, $state, $ionicPopup, $ionicHistory, AccountService, ErrorService, LocalStorage) {
@@ -84,7 +105,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         }
 
     })
-    .controller("RestaurantMenuCtrl", function($scope, $http, menu_data, ErrorService,DataService) {
+    .controller("RestaurantMenuCtrl", function($scope, $http, menu_data, ErrorService, DataService) {
         $scope.menu = menu_data;
         $scope.restaurant = DataService.restaurant;
         console.log(DataService.restaurant);
@@ -92,8 +113,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     })
     .controller("RestaurantDishCtrl", function($scope, $http, dish_data, ErrorService, DataService) {
         $scope.dish = dish_data;
-        $scope.addToCart = function(dish,num) {
-            DataService.addToCart(dish,num);
+        $scope.addToCart = function(dish, num) {
+            DataService.addToCart(dish, num);
         }
 
     })

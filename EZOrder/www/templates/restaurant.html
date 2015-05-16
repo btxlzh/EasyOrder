@@ -7,35 +7,36 @@
 <ion-view view-title="  {{restaurant.name}}">
     <ion-content class="padding">
         <div class="list card">
-                <div class="item item-icon-left item-divider">
-                    <i class="icon ion-compose"></i> Basic Information
-                </div>
-                <div class="item item-icon-left">
-                    <i class="icon ion-fork"></i> Name
-                    <span class="item-note">
+            <div class="item item-icon-left item-divider">
+                <i class="icon ion-compose"></i> Basic Information
+            </div>
+            <div class="item item-icon-left">
+                <i class="icon ion-fork"></i> Name
+                <span class="item-note">
              <h2>{{restaurant.name}}</h2>
           </span>
-                </div>
-                <div class="item item-icon-left" >
-                    <i class="icon ion-cash"></i> Average Cost
-                    <span class="item-note">
+            </div>
+            <div class="item item-icon-left">
+                <i class="icon ion-cash"></i> Average Cost
+                <span class="item-note">
              <h2>{{restaurant.price}}</h2>
           </span>
-                </div>
             </div>
-            <div class="list card">
-                <div class="item item-icon-left item-divider">
-                    <i class="icon ion-compose"></i> Description
-                </div>
-                <div class="item item-body item-text-wrap">
-                    <h3>{{restaurant.description}}</h3>
-                </div>
+        </div>
+        <div class="list card">
+            <div class="item item-icon-left item-divider">
+                <i class="icon ion-compose"></i> Description
             </div>
-            <div class="list card">
-                <a class="item item-icon-left" href="#tab/menu/{{restaurant.menu}}">
-                    <i class="icon ion-load-b"></i> Menu
-                </a>
+            <div class="item item-body item-text-wrap">
+                <h3>{{restaurant.description}}</h3>
             </div>
+        </div>
+        <button class="button icon ion-heart custom-icon" style="color: {{color}};" ng-click="addToFavorite()"></button>
+        <div class="list card">
+            <a class="item item-icon-left" href="#tab/menu/{{restaurant.menu}}">
+                <i class="icon ion-load-b"></i> Menu
+            </a>
+        </div>
         </p>
     </ion-content>
 </ion-view>
