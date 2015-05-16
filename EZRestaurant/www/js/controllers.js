@@ -33,12 +33,36 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     })
 
 
-.controller('OrderDetailCtrl', function($scope, $stateParams, AccountService) {
+.controller('OrderDetailCtrl', function($scope, $stateParams, AccountService, $ionicModal) {
     $scope.$on('$ionicView.beforeEnter', function() {
         AccountService.getOrder($stateParams.id).then(function(data) {
             $scope.order = data;
             console.log(data);
         }, function(err) {})
+    });
+
+    $ionicModal.fromTemplateUrl('changeQuantityModal.html', {
+        scope: $scope,
+        animation: 'slide-in-up',
+    }).then(function(modal) {
+        $scope.modalQuantity = modal
+    })
+    $scope.finishChangeQuantity = function(newQuntity) {
+        console.log($scope.key);
+        console.log($scope.order);
+        $scope.order.dishes[$scope.key].num = newQuntity;
+        $scope.modalQuantity.hide();
+    }
+    $scope.openModal = function(key) {
+        $scope.key = key;
+        $scope.modalQuantity.show();
+    }
+    $scope.closeModal = function() {
+        $scope.modalQuantity.hide();
+    };
+
+    $scope.$on('$destroy', function() {
+        $scope.modalQuantity.remove();
     });
 })
 
@@ -351,4 +375,3 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
 
     });
-

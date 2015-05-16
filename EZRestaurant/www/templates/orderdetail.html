@@ -5,18 +5,15 @@
   The Friends service returns an array of friend data
 -->
 <ion-view>
-
-  <ion-content class="padding">
-     <div >
-
-      <ion-list  show-delete="shouldShowDelete" can-swipe="true">
-        <ion-item class="item item-thumbnail-left item" ng-repeat="dish in order.dishes | filter:query">
-
-          <img src="http://localhost:1337/images/{{dish.image_urls[0]}}">
-              <h2>Name: {{dish.name}}</h2>
-              <h2>Unit Price: ${{dish.price}}</h2>
-              <h2>Quantity: {{dish.num}}</h2>
-              <h2>Total Price: {{dish.price*dish.num}}
+    <ion-content class="padding">
+        <div>
+            <ion-list show-delete="shouldShowDelete" can-swipe="true">
+                <ion-item class="item item-thumbnail-left item" ng-repeat="(key,dish) in order.dishes | filter:query" ng-click="openModal(key)">
+                    <img src="http://localhost:1337/images/{{dish.image_urls[0]}}">
+                    <h2>Name: {{dish.name}}</h2>
+                    <h2>Unit Price: ${{dish.price}}</h2>
+                    <h2>Quantity: {{dish.num}}</h2>
+                    <h2>Total Price: {{dish.price*dish.num}}
             <ion-option-button class="button-assertive"
                              ng-click="delete($index)">
             Delete
@@ -27,3 +24,24 @@
   </ion-content>
 </ion-view>
 
+<!-- script for changeNameModal -->
+<script id="changeQuantityModal.html" type="text/ng-template">
+    <div class="modal ">
+        <ion-header-bar>
+            <h1 class="title">Change Quantity</h1>
+        </ion-header-bar>
+        <ion-content>
+            <div style="padding-left:10px;padding-right:10px;">
+                <div class="list list-inset">
+                    <label class="item item-input">
+                        <input type="text" placeholder="Quantity" ng-model="newQuantity">
+                    </label>
+                </div>
+                <div class="button-bar ">
+                    <button class="button button-light" ng-click="finishChangeQuantity(newQuantity)">Done</button>
+                    <button class="button button-light" ng-click="closeModal()">Cancel</button>
+                </div>
+            </div>
+        </ion-content>
+    </div>
+</script>
