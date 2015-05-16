@@ -165,52 +165,7 @@ AccountService.login($scope.postData).then(function(data){
     })
   };
     
-  upload = function(fileURL){
-    var win = function (r) {
-          baseURL = "http://localhost:1337/images/";
-          console.log("Code = " + r.responseCode);
-          console.log("Response = " + r.response);
-          console.log("Sent = " + r.bytesSent);
-               $scope.modalPic.hide();
-            $ionicLoading.show({
-              content: 'Loading',
-              animation: 'fade-in',
-              showBackdrop: true,
-              maxWidth: 200,
-              showDelay: 0
-            });
-     $timeout(function () {
-          $ionicLoading.hide();
-             $scope.user.photoUrl = baseURL+$scope.user.id+"_profile.jpg?"+new Date().getTime();
-        }, 2000);
-         
-      }
-      var fail = function (error) {
-          alert("An error has occurred: Code = " + error.code);
-          console.log("upload error source " + error.source);
-          console.log("upload error target " + error.target);
-          $scope.modalPic.hide();
-      }
-      var options = new FileUploadOptions();
-      options.fileKey = "uploadFile";
-      options.fileName = fileURL.substr(fileURL.lastIndexOf('/') + 1);
-      options.mimeType = "text/plain";
-     
-      var params = {};
-      params.id = $scope.user.id;
-
-      options.params = params;
-
-      var ft = new FileTransfer();
-      ft.onprogress = function(progressEvent) {
-          if (progressEvent.lengthComputable) {
-            loadingStatus.setPercentage(progressEvent.loaded / progressEvent.total);
-          } else {
-            loadingStatus.increment();
-          }
-      };
-      ft.upload(fileURL, encodeURI(serverURL), win, fail, options);
-  }
+  upload = 
 
 
     $ionicModal.fromTemplateUrl('changeNameModal.html', {

@@ -175,6 +175,13 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
     }).then(function(modal) {
       $scope.modalDescription = modal
     })  
+    $ionicModal.fromTemplateUrl('addPicModal.html', {
+      scope: $scope,
+      animation: 'slide-in-up',
+      backdropClickToClose : true
+    }).then(function(modal) {
+      $scope.modalImage = modal
+    })  
      $scope.openModal = function(mode) {
         switch(mode) {
           case 0: 
@@ -207,6 +214,7 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
             break;
         }
     };
+
     $scope.changeName = function(newName){
       $scope.dish.name = newName;
       AccountService.editDish(dish_data.id,'name',newName);
@@ -222,7 +230,73 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
       AccountService.editDish(dish_data.id,'description',newDescription);
       $scope.modalDescription.hide();
     }
+      var fail = function (error) {
+          alert("An error has occurred: Code = " + error.code);
+          console.log("upload error source " + error.source);
+          console.log("upload error target " + error.target);
+          $scope.modalPic.hide();
+      }
+      var win = function (r) {
+          baseURL = "http://localhost:1337/images/";
+          console.log("Code = " + r.responseCode);
+          console.log("Response = " + r.response);
+          console.log("Sent = " + r.bytesSent);
+               $scope.modalPic.hide();
+            $ionicLoading.show({
+              content: 'Loading',
+              animation: 'fade-in',
+              showBackdrop: true,
+              maxWidth: 200,
+              showDelay: 0
+            });
+     $timeout(function () {
+          $ionicLoading.hide();
+             $scope.user.photoUrl = baseURL+$scope.user.id+"_profile.jpg?"+new Date().getTime();
+        }, 2000);
+         
+      }
+    
+    var serverURL = "http://localhost:1337/file/upload";
+    $scope.takePicture = function() {
+      var options = {
+        quality: 50,
+        destinationType: Camera.DestinationType.DATA_URL,
+        sourceType: Camera.PictureSourceType.CAMERA,
+        allowEdit: true,
+        encodingType: Camera.EncodingType.JPEG,
+        targetWidth: 100,
+        targetHeight: 100,
+        popoverOptions: CameraPopoverOptions,
+        saveToPhotoAlbum: false
+      };
 
+      $cordovaCamera.getPicture(options).then(function(imageData) {
+        var image = document.getElementById('profile-image');
+        image.src = "data:image/jpeg;base64," + imageData;
+        alert(image.src);
+      }, function(err) {
+        // error
+      });
+  };
+
+  $scope.choose = function() { 
+    var options = {
+      quality: 50,
+      destinationType: Camera.DestinationType.FILE_URI,
+      sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+    };
+    $cordovaCamera.getPicture(options).then(
+    function(imageURI) {
+      window.resolveLocalFileSystemURI(imageURI, function(fileEntry) {
+        $scope.picData = fileEntry.nativeURL;
+        $scope.ftLoad = true;
+        FileService.upload(fileEntry.nativeURL);
+        });
+    },
+    function(err){
+      $ionicLoading.show({template: 'Error', duration:500});
+    })
+  };
 })
 .controller("OrderCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,ErrorService) {
     $scope.orders=[];

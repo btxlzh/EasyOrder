@@ -3,6 +3,33 @@ angular.module('starter.services', [])
     var OrderFactory= {};
     return OrderFactory;
 })
+.factory('FileService',function($http,$ionicHistory,$q,LocalStorage){
+    var FileFactory= {};
+    FileFactory.upload=function(fileURL,win,fail,id){
+    
+    
+      var options = new FileUploadOptions();
+      options.fileKey = "uploadFile";
+      options.fileName = fileURL.substr(fileURL.lastIndexOf('/') + 1);
+      options.mimeType = "text/plain";
+     
+      var params = {};
+      params.id = id;
+
+      options.params = params;
+
+      var ft = new FileTransfer();
+      ft.onprogress = function(progressEvent) {
+          if (progressEvent.lengthComputable) {
+            loadingStatus.setPercentage(progressEvent.loaded / progressEvent.total);
+          } else {
+            loadingStatus.increment();
+          }
+      };
+      ft.upload(fileURL, encodeURI(serverURL), win, fail, options);
+  }
+    return FileFactory;
+})
 .factory('AccountService',function($http,$ionicHistory,$q,LocalStorage){
       var AccountFactory= {};
       AccountFactory.user =null;
