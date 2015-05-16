@@ -8,31 +8,31 @@
 
 module.exports = {
 
-  attributes: require('waterlock').models.user.attributes({
-    
-  	
-    phoneNumber: {
-    	type: 'string',
-    	defaultsTo: '111-222-3333'
-  	},
-  	nickName: {
-    	type: 'string',
-    	defaultsTo: 'OtherMan'
-  	},
-  	photoUrl:{
-  		type: 'string',
-  		defaultsTo: sails.config.EZconf.baseURL+'images/defaultPhoto.jpg'
-  	},
-    restaurant:{
-      model:  'Restaurant',
-      via : 'owner'
-    },
-    favoriteRestaurant:{
-      collection: 'Restaurant',
-      via: 'follower'
-    }
-  }),
-  
-  beforeCreate: require('waterlock').models.user.beforeCreate,
-  beforeUpdate: require('waterlock').models.user.beforeUpdate
+    attributes: require('waterlock').models.user.attributes({
+
+
+        phoneNumber: {
+            type: 'string',
+            defaultsTo: '111-222-3333'
+        },
+        nickName: {
+            type: 'string',
+            defaultsTo: 'OtherMan'
+        },
+        photoUrl: {
+            type: 'string',
+            defaultsTo: 'defaultPhoto.jpg'
+        },
+        restaurant: {
+            model: 'Restaurant',
+            via: 'owner'
+        },
+        favoriteRestaurant: {
+            collection: 'Restaurant',
+            via: 'follower'
+        }
+    }),
+
+    beforeCreate: require('waterlock').models.user.beforeCreate,
+    beforeUpdate: require('waterlock').models.user.beforeUpdate
 };

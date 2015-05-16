@@ -1,6 +1,6 @@
 angular.module('starter.services', [])
 
-.factory('DataService', function($http, AccountService) {
+.factory('DataService', function($http, AccountService, CONFIG) {
         function getUrlVars(Url) {
             var vars = {};
             var parts = url.replace(/[?&]+([^=&]+)=([^&]*)/gi,
@@ -13,10 +13,10 @@ angular.module('starter.services', [])
         var dataFactory = {};
         dataFactory.cart = [];
         dataFactory.getAllRestaurants = function() {
-            return $http.get('http://localhost:1337/restaurant/');
+            return $http.get(CONFIG.serverUrl + '/restaurant/');
         }
         dataFactory.getRestaurant = function(id) {
-            return $http.get('http://localhost:1337/restaurant/' + id)
+            return $http.get(CONFIG.serverUrl + '/restaurant/' + id)
                 .then(
                     function(resp) {
                         dataFactory.restaurant = resp.data;
@@ -28,7 +28,7 @@ angular.module('starter.services', [])
                 );
         }
         dataFactory.isFavorite = function(restaurant_id) {
-            return $http.get('http://localhost:1337/user/isFavorite?user=' + AccountService.user.id + "&restaurant=" + restaurant_id)
+            return $http.get(CONFIG.serverUrl + '/user/isFavorite?user=' + AccountService.user.id + "&restaurant=" + restaurant_id)
                 .then(
                     function(resp) {
                         console.log(resp.data);
@@ -44,7 +44,7 @@ angular.module('starter.services', [])
             var requestData = {};
             requestData.user = AccountService.user.id;
             requestData.restaurant = restaurant_id;
-            return $http.post('http://localhost:1337/user/addToFavorite', requestData, {
+            return $http.post(CONFIG.serverUrl + '/user/addToFavorite', requestData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -63,7 +63,7 @@ angular.module('starter.services', [])
             var requestData = {};
             requestData.user = AccountService.user.id;
             requestData.restaurant = restaurant_id;
-            return $http.post('http://localhost:1337/user/deleteFromFavorite', requestData, {
+            return $http.post(CONFIG.serverUrl + '/user/deleteFromFavorite', requestData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -79,7 +79,7 @@ angular.module('starter.services', [])
             );
         }
         dataFactory.getFavoriateRestaurant = function() {
-            return $http.get('http://localhost:1337/User/getFavorite?user=' + AccountService.user.id)
+            return $http.get(CONFIG.serverUrl + '/User/getFavorite?user=' + AccountService.user.id)
                 .then(
                     function(resp) {
                         console.log(resp.data);
@@ -93,7 +93,7 @@ angular.module('starter.services', [])
                 );
         }
         dataFactory.getMenu = function(id) {
-            return $http.get('http://localhost:1337/menu/' + id + '/all')
+            return $http.get(CONFIG.serverUrl + '/menu/' + id + '/all')
                 .then(
                     function(resp) {
                         console.log(resp.data);
@@ -108,7 +108,7 @@ angular.module('starter.services', [])
                 );
         }
         dataFactory.getDish = function(id) {
-            return $http.get('http://localhost:1337/dish/' + id)
+            return $http.get(CONFIG.serverUrl + '/dish/' + id)
                 .then(
                     function(resp) {
                         console.log(resp.data);
@@ -161,7 +161,7 @@ angular.module('starter.services', [])
             requestData.dishes = dataFactory.cart;
             requestData.restaurant = dataFactory.restaurant.id;
 
-            return $http.post('http://localhost:1337/Order/create', requestData, {
+            return $http.post(CONFIG.serverUrl + '/Order/create', requestData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -178,17 +178,17 @@ angular.module('starter.services', [])
         }
         return dataFactory;
     })
-    .factory('AccountService', function($http, $ionicHistory, $q, LocalStorage) {
+    .factory('AccountService', function($http, $ionicHistory, $q, LocalStorage, CONFIG) {
         var AccountFactory = {};
         AccountFactory.login = function(credential) {
             $ionicHistory.nextViewOptions({
                 disableAnimate: true,
                 disableBack: true
             });
-            return $http.post("http://localhost:1337/auth/login/", credential)
+            return $http.post(CONFIG.serverUrl + "/auth/login/", credential)
                 .then(
                     function(respUser) {
-                        return $http.get("http://localhost:1337/user/jwt")
+                        return $http.get(CONFIG.serverUrl + "/user/jwt")
                             .then(
                                 function(respToken) {
                                     AccountFactory.setUser(respUser.data);
@@ -212,10 +212,10 @@ angular.module('starter.services', [])
             });
             LocalStorage.del('EZ_LOCAL_TOKEN');
             delete AccountFactory.user;
-            return $http.get("http://localhost:1337/auth/logout");
+            return $http.get(CONFIG.serverUrl + "/auth/logout");
         }
         AccountFactory.getToken = function() {
-            return $http.get("http://localhost:1337/user/jwt")
+            return $http.get(CONFIG.serverUrl + "/user/jwt")
         }
         AccountFactory.getUser = function() {
             console.log('gerUser Start!');
@@ -232,7 +232,7 @@ angular.module('starter.services', [])
                 } else {
                     LocalStorage.get('EZ_LOCAL_TOKEN', function(data) {
                         if (data) {
-                            $http.get("http://localhost:1337/auth/loginWithToken?access_token=" + data)
+                            $http.get(CONFIG.serverUrl + "/auth/loginWithToken?access_token=" + data)
                                 .then(
                                     function(resp) {
                                         console.log('GET User by login with token' + data);
@@ -256,7 +256,7 @@ angular.module('starter.services', [])
             AccountFactory.user = user;
         }
         AccountFactory.editUser = function(att, val) {
-            return $http.get("http://localhost:1337/user/update/" + AccountFactory.user.id + "?" + att + '=' + val)
+            return $http.get(CONFIG.serverUrl + "/user/update/" + AccountFactory.user.id + "?" + att + '=' + val)
                 .then(
                     function(resp) {
                         return resp.data;

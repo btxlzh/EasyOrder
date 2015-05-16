@@ -27,10 +27,18 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             return;
         }
     })
-    .controller('AccountCtrl', function($scope, $http, $state, $ionicHistory, AccountService, LocalStorage) {
+    .controller('AccountCtrl', function($scope, $http, $state, $ionicHistory, AccountService, CONFIG, LocalStorage) {
 
         $scope.$on('$ionicView.beforeEnter', function() {
-            AccountService.checkLogin($scope, $state, $ionicHistory);
+            AccountService.checkLogin($scope, $state, $ionicHistory).then(function(data) {
+                if (data == true) {
+                    $scope.photoUrl = CONFIG.serverUrl + "/images/" + $scope.user.photoUrl + "?" + new Date().getTime();
+                    console.log("photoUrl: " + $scope.photoUrl);
+                }
+            }, function(error) {
+                ErrorService.popUp("unable to connect to server");
+            });
+
         });
         $scope.logout = function() {
             AccountService.logout()
@@ -112,6 +120,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         $scope.$on('$ionicView.beforeEnter', function() {
             AccountService.getUser().then(function(data) {
                 $scope.user = data;
+                $scope.photoUrl = CONFIG.serverUrl + "/images/" + $scope.user.photoUrl + "?" + new Date().getTime();
                 console.log(data);
             }, function(err) {
                 $ionicHistory.nextViewOptions({
@@ -168,9 +177,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         };
         var success = function(r) {
             baseURL = CONFIG.serverUrl + "/images/";
-            alert("Code = " + r.responseCode);
-            alert("Response = " + r.response);
-            alert("Sent = " + r.bytesSent);
             $scope.modalPic.hide();
             $ionicLoading.show({
                 content: 'Loading',
@@ -181,11 +187,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             });
             $timeout(function() {
                 $ionicLoading.hide();
-                $scope.user.photoUrl = baseURL + $scope.user.id + "_profile.jpg?" + new Date().getTime();
-                // if ($scope.user.photoUrl == "images/defaultPhoto.jpg") {
-                //     $scope.user.photoUrl = $scope.user.id + "_profile.jpg";
-                //     AccountService.editUser("photoUrl", "images/" + $scope.user.id + "_profile.jpg");
-                // }
+                if ($scope.user.photoUrl == "defaultPhoto.jpg") {
+                    $scope.user.photoUrl = $scope.user.id + "_profile.jpg";
+                    AccountService.editUser("photoUrl", $scope.user.photoUrl);
+                }
+                $scope.photoUrl = baseURL + $scope.user.photoUrl + "?" + new Date().getTime();
 
             }, 2000);
 
@@ -196,8 +202,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             console.log("upload error target " + error.target);
             $scope.modalPic.hide();
         }
-
-
 
 
         $ionicModal.fromTemplateUrl('changeNameModal.html', {
