@@ -187,8 +187,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         $scope.dish = dish_data;
         $scope.baseURL = "http://localhost:1337/images/";
 
-        $scope.image_srcs = dish_data.image_urls;
-
         $ionicModal.fromTemplateUrl('changeNameModal.html', {
             scope: $scope,
             animation: 'slide-in-up',
