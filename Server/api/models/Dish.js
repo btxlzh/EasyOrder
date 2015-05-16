@@ -10,7 +10,7 @@ module.exports = {
   attributes: {
     name    :     	{ type : 'string',required: true},
     price   :     	{ type : 'integer' },
-    image_urls: 	{ type : 'integer'},
+    image_urls: 	{ type : 'array'},
     description: 	{ type : 'text'},
     rating : 		{ type: 'integer'},
     owner:{
