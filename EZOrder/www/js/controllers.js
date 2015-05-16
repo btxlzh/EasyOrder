@@ -1,11 +1,14 @@
 angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
 .controller('CartCtrl', function($scope, DataService, LocalStorage) {
+   $scope.$on('$ionicView.beforeEnter', function() {
     $scope.cart = DataService.cart;
     console.log(DataService.cart);
+})
     $scope.checkout = function() {
         DataService.checkout().then(function(resp) {
-            DataService.cart = {};
+            DataService.cart.length = 0;
+            DataService.cart={};
         });
     }
     $scope.delete = function(key) {
