@@ -290,6 +290,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 filename = dish_data.id + "_" + dish_count + "_dish.jpg";
                 AccountService.addDishPic(dish_data.id, filename).then(function(data) {
                     dish_data.image_urls.push(filename);
+
                     $scope.image_urls.push($scope.baseURL + filename);
                 });
 
@@ -347,4 +348,4 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 })
         };
 
-    })
+    });

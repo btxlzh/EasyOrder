@@ -11,9 +11,9 @@
     </ion-nav-buttons>
     <ion-content class="padding">
         <div class="item item-list-detail">
-            <ion-scroll zooming="true" direction="x">
+            <ion-scroll zooming="true" direction="x" ng-repeat="image_src in dish.image_urls">
                 <!-- <div style="width: 5000px; height: 5000px; background: url('https://upload.wikimedia.org/wikipedia/commons/a/ad/Europe_geological_map-en.jpg') repeat"></div> -->
-                <img ng-repeat="image_src in dish.image_urls" src="http://localhost:1337/images/{{image_src}}" style="height:200px; display:inline;">{{image_src}}</img>
+                <img ng-repeat="image_src in dish.image_urls" src="http://localhost:1337/images/{{image_src}}" style="height:200px; display:inline;"></img>
             </ion-scroll>
         </div>
         <ion-list>

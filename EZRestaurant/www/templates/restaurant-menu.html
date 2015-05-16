@@ -16,7 +16,7 @@
         </label>
     </div>
     <ion-content class="padding has-subheader">
-        <div>
+        <div class="list card">
             <ion-list show-delete="shouldShowDelete" can-swipe="listCanSwipe">
                 <ion-item class="item item-thumbnail-left item" ng-repeat="dish in menu.dishes | filter:query" href="#tab/dish/{{dish.id}}">
                     <img src="http://localhost:1337/images/{{dish.image_urls[0]}}">
