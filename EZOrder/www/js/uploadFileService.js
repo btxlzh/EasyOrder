@@ -2,7 +2,7 @@ angular.module('starter.uploadFile', [])
 
 .factory('uploadFile', function($http, $ionicHistory, $q, LocalStorage) {
     var UploadFactory = {};
-    UploadFactory.upload = function(user, serverURL, fileURL, success, fail) {
+    UploadFactory.upload = function(serverURL, fileURL, filename, success, fail) {
 
         var options = new FileUploadOptions();
         options.fileKey = "uploadFile";
@@ -10,7 +10,7 @@ angular.module('starter.uploadFile', [])
         options.mimeType = "text/plain";
 
         var params = {};
-        params.id = user.id;
+        params.filename = filename;
 
         options.params = params;
 

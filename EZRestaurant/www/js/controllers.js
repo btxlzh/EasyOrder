@@ -1,37 +1,36 @@
+angular.module('starter.controllers', ['ionic', 'ngCordova'])
+    .controller("OrderCtrl", function($scope, $cordovaBarcodeScanner, $http, $state, ErrorService) {
+        $scope.orders = [];
+        $scope.listen = function() {
+            io.socket.get('/Order/listenOrder', function serverResponded(body, JWR) {
 
-angular.module('starter.controllers',  ['ionic', 'ngCordova'])
-.controller("OrderCtrl", function($scope, $cordovaBarcodeScanner,$http,$state,ErrorService) {
-    $scope.orders=[];
-    $scope.listen = function(){
-      io.socket.get('/Order/listenOrder',function serverResponded (body, JWR) {
-
-          // JWR ==> "JSON WebSocket Response"
-          console.log('Sails responded with: ', body);
-          console.log('with headers: ', JWR.headers);
-          console.log('and with status code: ', JWR.statusCode);
-        });
-      }
-    io.socket.on('order', function onServerSentEvent (obj) {
-             if(obj.verb === 'created'){
-              console.log(obj.data);
-              $scope.orders.push(obj.data);
-              // Add the data to current chatList
-              // Call $scope.$digest to make the changes in UI
-              $scope.$digest();
+                // JWR ==> "JSON WebSocket Response"
+                console.log('Sails responded with: ', body);
+                console.log('with headers: ', JWR.headers);
+                console.log('and with status code: ', JWR.statusCode);
+            });
+        }
+        io.socket.on('order', function onServerSentEvent(obj) {
+            if (obj.verb === 'created') {
+                console.log(obj.data);
+                $scope.orders.push(obj.data);
+                // Add the data to current chatList
+                // Call $scope.$digest to make the changes in UI
+                $scope.$digest();
             }
-  });
-    $scope.confirm=function(index){
-      console.log($scope.orders[index].status);
-      $scope.orders[index].status="confirm";
-      console.log($scope.orders[index].status);
-    }
-    $scope.complete=function(index){
-      $scope.orders.splice(index,1)
-    }
+        });
+        $scope.confirm = function(index) {
+            console.log($scope.orders[index].status);
+            $scope.orders[index].status = "confirm";
+            console.log($scope.orders[index].status);
+        }
+        $scope.complete = function(index) {
+            $scope.orders.splice(index, 1)
+        }
 
 
- 
-})
+
+    })
 
 
 .controller('OrderDetailCtrl', function($scope, $stateParams, AccountService) {
@@ -184,8 +183,10 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
         }
 
     })
-    .controller("RestaurantDishCtrl", function($scope, $http, dish_data, ErrorService, $ionicModal, AccountService) {
+    .controller("RestaurantDishCtrl", function($scope, $http, dish_data, ErrorService, $ionicModal, AccountService, FileService, $cordovaCamera, $ionicLoading, $timeout) {
         $scope.dish = dish_data;
+        $scope.baseURL = "http://localhost:1337/images/";
+        $scope.image_srcs = dish_data.image_urls;
         $ionicModal.fromTemplateUrl('changeNameModal.html', {
             scope: $scope,
             animation: 'slide-in-up',
@@ -266,14 +267,13 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
             alert("An error has occurred: Code = " + error.code);
             console.log("upload error source " + error.source);
             console.log("upload error target " + error.target);
-            $scope.modalPic.hide();
+            $scope.modalImage.hide();
         }
-        var win = function(r) {
-            baseURL = "http://localhost:1337/images/";
+        var success = function(r) {
             console.log("Code = " + r.responseCode);
             console.log("Response = " + r.response);
             console.log("Sent = " + r.bytesSent);
-            $scope.modalPic.hide();
+            $scope.modalImage.hide();
             $ionicLoading.show({
                 content: 'Loading',
                 animation: 'fade-in',
@@ -283,12 +283,21 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
             });
             $timeout(function() {
                 $ionicLoading.hide();
-                $scope.user.photoUrl = baseURL + $scope.user.id + "_profile.jpg?" + new Date().getTime();
+
+                if (dish_data.image_urls == null) {
+                    dish_data.image_urls = [];
+                }
+                dish_count = dish_data.image_urls.length;
+                filename = dish_data.id + "_" + dish_count + "_dish.jpg";
+                AccountService.addDishPic(dish_data.id, filename).then(function(data) {
+                    dish_data.image_urls.push(filename);
+                    console.log("success: image_urls: " + dish_data.image_urls);
+                });
+
             }, 2000);
 
         }
 
-        var serverURL = "http://localhost:1337/file/upload";
         $scope.takePicture = function() {
             var options = {
                 quality: 50,
@@ -322,7 +331,13 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
                     window.resolveLocalFileSystemURI(imageURI, function(fileEntry) {
                         $scope.picData = fileEntry.nativeURL;
                         $scope.ftLoad = true;
-                        FileService.upload(fileEntry.nativeURL);
+                        dish_count = 0;
+                        console.log("before upload: image_urls: " + dish_data.image_urls);
+                        if (dish_data.image_urls != null) {
+                            dish_count = dish_data.image_urls.length;
+                        }
+                        filename = dish_data.id + "_" + dish_count + "_dish.jpg";
+                        FileService.upload("http://localhost:1337/file/upload", fileEntry.nativeURL, filename, success, fail);
                     });
                 },
                 function(err) {
@@ -333,5 +348,4 @@ angular.module('starter.controllers',  ['ionic', 'ngCordova'])
                 })
         };
 
-});
-
+    });
