@@ -12,7 +12,7 @@ module.exports = {
   		model: 'User',
   	},
   	dishes:{
-  		type: 'array',
+  		type: 'json',
   	},
   	restaurant:{
   		model: 'Restaurant',

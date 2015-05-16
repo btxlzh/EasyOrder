@@ -1,12 +1,15 @@
 angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
 .controller('CartCtrl', function($scope, DataService, LocalStorage) {
-    $scope.dishes = DataService.cart;
+    $scope.cart = DataService.cart;
+    console.log(DataService.cart);
     $scope.checkout = function() {
         DataService.checkout().then(function(resp) {
-            DataService.cart.length = 0;
-            DataService.cart_map = {};
+            DataService.cart = {};
         });
+    }
+    $scope.delete = function(key) {
+        delete DataService.cart[key];
     }
 })
 

@@ -123,24 +123,22 @@ angular.module('starter.services', [])
         dataFactory.getRestaurantByQRCode = function(Image_data) {
             return getUrlVars(Image_data.te)["id"];
         }
-        dataFactory.cart = [];
-        dataFactory.cart_map = {};
+        dataFactory.cart = {};
         dataFactory.addToCart = function(dish, num) {
 
-            if (dish.id in dataFactory.cart_map) {
-                index = dataFactory.cart_map[dish.id];
-                dataFactory.cart[index].num += num;
-                // console.log("add exist");
-                //  console.log(Cart.dishes);
+            if (dish.id in dataFactory.cart) {
+                dataFactory.cart[dish.id].num+=parseInt(num);
+                console.log("add exist");
+                console.log(dataFactory.cart);
 
 
             } else {
 
-                dish.num = num;
+                dish.num = parseInt(num);
                 //push new
-                dataFactory.cart_map[dish.id] = dataFactory.cart.length;
-                dataFactory.cart.push(dish);
-                // console.log("new add");
+                dataFactory.cart[dish.id] = dish;
+                 console.log("new add");
+                 console.log( dataFactory.cart );
                 // console.log(Cart.dishes);
                 // console.log(Cart.dish_map);
 
@@ -155,9 +153,14 @@ angular.module('starter.services', [])
             dataFactory.cart.length = 0;
             return;
         }
-        dataFactory.checkout = function() {
+        dataFactory.checkout = function(tableId) {
             var requestData = {};
-            requestData.user = AccountService.user.id;
+            if(AccountService.user){
+                requestData.user = AccountService.user.id;
+            }else {
+                requestData.user = 0;
+            }
+            requestData.tableId = tableId;
             requestData.dishes = dataFactory.cart;
             requestData.restaurant = dataFactory.restaurant.id;
 
