@@ -13,11 +13,7 @@
         <div class="item item-list-detail">
             <ion-scroll zooming="true" direction="x">
                 <!-- <div style="width: 5000px; height: 5000px; background: url('https://upload.wikimedia.org/wikipedia/commons/a/ad/Europe_geological_map-en.jpg') repeat"></div> -->
-                <img src="img/food1.jpg" style="height:200px; display:inline;"></img>
-                <img src="img/food2.jpg" style="height:200px; display:inline;"></img>
-                <img src="img/food3.jpg" style="height:200px; display:inline;"></img>
-                <img src="img/food4.jpg" style="height:200px; display:inline;"></img>
-                <img src="img/food5.jpg" style="height:200px; display:inline;"></img>
+                <img ng-repeat="image_src in image_urls" src="{{image_src}}" style="height:200px; display:inline;">{{image_src}}</img>
             </ion-scroll>
         </div>
         <ion-list>
