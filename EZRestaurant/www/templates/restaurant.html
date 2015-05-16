@@ -8,40 +8,48 @@
   <ion-content class="padding">
     
     <p>
-      <h4>Basic Information</h4>
+      
 
       <div class="list card">
+        <div class="item item-icon-left item-divider">
+          <i class="icon ion-compose"></i>
+          Basic Information
+        </div>
          <a class="item item-icon-left" ng-click='openModal(0)'>
-          <i class="icon ion-cash"></i>
+          <i class="icon ion-fork"></i>
           Name
           <span class="item-note">
-             {{restaurant.name}}
+             <h2>{{restaurant.name}}</h2>
           </span>
         </a>
         <a class="item item-icon-left" ng-click='openModal(1)'>
           <i class="icon ion-cash"></i>
-          Price
+          Average Cost
           <span class="item-note">
-             {{restaurant.price}}
+             <h2>{{restaurant.price}}</h2>
           </span>
         </a>
-        
-        <a class="item item-icon-left">
-          <i class="icon ion-compose"></i>
-          Description
-        </a>
-        <a class="item item-body" ng-click='openModal(2)'>
-          <p>
-            {{restaurant.description}}
-          </p>
-        </a>
-        <a class="item item-icon-left" href="#tab/qrcode/{{restaurant.id}}">
+         <a class="item item-icon-left" href="#tab/qrcode/{{restaurant.id}}">
           <i class="icon ion-qr-scanner"></i>
           QR Code
+         </a>
+        </div>
+        <div class="list card">
+        <div class="item item-icon-left item-divider">
+          <i class="icon ion-compose"></i>
+          Description
+        </div>
+        <a class="item item-body item-text-wrap" ng-click='openModal(2)'>
+            <h3>{{restaurant.description}}</h3>
         </a>
+       
       </div>
-      <h4>Menus</h4>
+     
       <div class="list card">
+        <div class="item item-icon-left item-divider">
+          <i class="icon ion-compose"></i>
+          Menu
+        </div>
         <a class="item item-icon-left" href="#tab/menu/{{restaurant.menu}}">
           <i class="icon ion-load-b"></i>
           Menu

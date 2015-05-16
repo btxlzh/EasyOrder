@@ -8,13 +8,19 @@
   <ion-content class="padding">
     <ion-list>
       <ion-item ng-click='openModal(0)'>
-        Name:   <div class="post-time">{{dish.name}}</div>
+        Name:   
+        <span class="item-note">
+             <h2>{{dish.name}}</h2>
+          </span>
       </ion-item>
       <ion-item ng-click='openModal(1)'>
-        price: <div class="post-time">{{dish.price}}</div>
+        price: 
+        <span class="item-note">
+             <h2>{{dish.price}}</h2>
+          </span>
       </ion-item>
        <ion-item ng-click='openModal(2)'>
-        Descripthon: <div class="post-time">{{dish.description}}</div>
+        Descripthon: <div class="item-text-wrap" >{{dish.description}}</div>
       </ion-item>
     </ion-list>
   </ion-content>

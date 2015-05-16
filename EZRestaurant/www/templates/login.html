@@ -19,3 +19,25 @@
 	</p>
   </ion-content>
 </ion-view>
+
+<script id="Register.html" type="text/ng-template">
+  <div class="modal ">
+    <ion-header-bar>
+    <h1 class="title">Change Descripthon</h1>
+    </ion-header-bar>
+
+    <ion-content>
+      <div style= "padding-left:10px;padding-right:10px;">
+        <div class="list list-inset">
+          <label class="item item-input">
+            <textarea rows="4" placeholder="new Descripthon" ng-model="newDescripthon"/>
+          </label>
+        </div>
+        <div class="button-bar " >
+          <button class="button button-light" ng-click="changeDescripthon(newDescripthon)">Done</button>
+          <button class="button button-light" ng-click="closeModal(2)">Cancel</button>
+        </div>
+      </div>
+    </ion-content>
+  </div>
+</script>
