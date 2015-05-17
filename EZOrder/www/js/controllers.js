@@ -37,7 +37,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     });
 })
 
-.controller('LoginCtrl', function($q, $scope, $http, $state, $ionicPopup, $ionicHistory, AccountService, ErrorService, LocalStorage) {
+.controller('LoginCtrl', function($q, $scope, $http, $state, $ionicPopup, $ionicHistory, AccountService, ErrorService, LocalStorage, $ionicModal) {
 
         $scope.postData = {};
         $scope.login = function() {
@@ -50,9 +50,44 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 });
             }, function(err) {
                 ErrorService.popUp("WRONG email OR password!");
-            })
+            });
             return;
-        }
+        };
+        $scope.register = function() {
+            console.log("register called");
+            if ($scope.postData.password !== $scope.postData.password2) {
+                ErrorService.popUp("please enter same password");
+            } else if ($scope.postData.password.length < 8) {
+                ErrorService.popUp("password needs to be at least 8 characters long");
+            } else {
+                $scope.modal.hide();
+                AccountService.register(
+                    $scope.postData
+                ).then(function(data) {
+                    $scope.login(username, password);
+                }, function(err) {
+                    ErrorService.popUp(err.data);
+                });
+            }
+
+            return;
+        };
+        $ionicModal.fromTemplateUrl('Register.html', {
+            scope: $scope
+        }).then(function(modal) {
+            $scope.modal = modal;
+        });
+
+        $scope.openModal = function() {
+            $scope.modal.show();
+        };
+        $scope.closeModal = function() {
+            $scope.postData = {};
+            $scope.modal.hide();
+        };
+        $scope.$on('$destroy', function() {
+            $scope.modal.remove();
+        });
     })
     .controller('AccountCtrl', function($scope, $http, $state, $ionicHistory, AccountService, CONFIG, LocalStorage) {
 
@@ -192,7 +227,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             };
             $cordovaCamera.getPicture(options).then(
                 function(imageURI) {
-                     console.log("upload succ");
+                    console.log("upload succ");
                     window.resolveLocalFileSystemURI(imageURI, function(fileEntry) {
                         $scope.picData = fileEntry.nativeURL;
                         $scope.ftLoad = true;

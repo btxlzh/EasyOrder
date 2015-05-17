@@ -1,10 +1,10 @@
 angular.module('starter.services', [])
     .factory('OrderService', function($http, $ionicHistory, $q, LocalStorage) {
         var OrderFactory = {};
-        OrderFactory.orders=[];
+        OrderFactory.orders = [];
         return OrderFactory;
     })
-    .factory('FileService', function($http, $ionicHistory, $q, LocalStorage,CONFIG) {
+    .factory('FileService', function($http, $ionicHistory, $q, LocalStorage, CONFIG) {
         var FileFactory = {};
         FileFactory.upload = function(serverURL, fileURL, filename, success, fail) {
 
@@ -24,7 +24,7 @@ angular.module('starter.services', [])
         }
         return FileFactory;
     })
-    .factory('AccountService', function($http, $ionicHistory, $q, LocalStorage,CONFIG) {
+    .factory('AccountService', function($http, $ionicHistory, $q, LocalStorage, CONFIG) {
         var AccountFactory = {};
         AccountFactory.user = null;
         AccountFactory.restaurant = null;
@@ -34,16 +34,34 @@ angular.module('starter.services', [])
                 disableAnimate: true,
                 disableBack: true
             });
-            return $http.post(CONFIG.serverUrl+"/auth/login/", credential)
+            return $http.post(CONFIG.serverUrl + "/auth/login/", credential)
                 .then(
                     function(respUser) {
-                        var promise1 = AccountFactory.setUser(respUser.data);
-                        var promise2 = AccountFactory.getToken();
+                        return $http.get(CONFIG.serverUrl + "/user/jwt")
+                            .then(
+                                function(respToken) {
+                                    AccountFactory.setUser(respUser.data);
+                                    return {
+                                        user: respUser.data,
+                                        token: respToken.data
+                                    }
+                                }
+                            )
+                    }
+                );
 
-                        $q.all([promise1, promise2]).then(function() {
-                            return true;
-                        });
-                    })
+        }
+        AccountFactory.register = function(credential) {
+            $ionicHistory.nextViewOptions({
+                disableAnimate: true,
+                disableBack: true
+            });
+            return $http.post(CONFIG.serverUrl + "/auth/register/", credential)
+                .then(
+                    function(respUser) {
+                        return respUser.data;
+                    }
+                );
         }
         AccountFactory.logout = function() {
             $ionicHistory.nextViewOptions({
@@ -53,10 +71,10 @@ angular.module('starter.services', [])
             LocalStorage.del('EZ_LOCAL_TOKEN');
             delete AccountFactory.user;
             delete AccountFactory.restaurant;
-            return $http.get(CONFIG.serverUrl+"/auth/logout");
+            return $http.get(CONFIG.serverUrl + "/auth/logout");
         }
         AccountFactory.getToken = function() {
-            return $http.get(CONFIG.serverUrl+"/user/jwt").then(function(resp) {
+            return $http.get(CONFIG.serverUrl + "/user/jwt").then(function(resp) {
                 LocalStorage.set('EZ_LOCAL_TOKEN', resp.data.token);
                 return resp.data.token;
             });
@@ -83,7 +101,7 @@ angular.module('starter.services', [])
                     LocalStorage.get('EZ_LOCAL_TOKEN', function(data) {
                         if (data) {
                             console.log('GET User by login with token' + data);
-                            $http.get(CONFIG.serverUrl+"/auth/loginWithToken?access_token=" + data)
+                            $http.get(CONFIG.serverUrl + "/auth/loginWithToken?access_token=" + data)
                                 .then(
                                     function(resp) {
 
@@ -110,7 +128,7 @@ angular.module('starter.services', [])
             AccountFactory.user = user;
         }
         AccountFactory.editUser = function(att, val) {
-            return $http.get(CONFIG.serverUrl+"/user/update/" + AccountFactory.user.id + "?" + att + '=' + val)
+            return $http.get(CONFIG.serverUrl + "/user/update/" + AccountFactory.user.id + "?" + att + '=' + val)
                 .then(
                     function(resp) {
                         return resp.data;
@@ -118,7 +136,7 @@ angular.module('starter.services', [])
                 );
         }
         AccountFactory.editDish = function(id, att, val) {
-            return $http.get(CONFIG.serverUrl+"/dish/update/" + id + "?" + att + '=' + val)
+            return $http.get(CONFIG.serverUrl + "/dish/update/" + id + "?" + att + '=' + val)
                 .then(
                     function(resp) {
                         return resp.data;
@@ -126,7 +144,7 @@ angular.module('starter.services', [])
                 );
         }
         AccountFactory.editRestaurant = function(id, att, val) {
-            return $http.get(CONFIG.serverUrl+"/Restaurant/update/" + id + "?" + att + '=' + val)
+            return $http.get(CONFIG.serverUrl + "/Restaurant/update/" + id + "?" + att + '=' + val)
                 .then(
                     function(resp) {
                         return resp.data;
@@ -135,11 +153,11 @@ angular.module('starter.services', [])
         }
 
         AccountFactory.getQRSrc = function(id) {
-            return CONFIG.serverUrl+"/restaurant/getQRcode?id=" + id;
+            return CONFIG.serverUrl + "/restaurant/getQRcode?id=" + id;
 
         }
         AccountFactory.createDish = function(menu_id) {
-            return $http.get(CONFIG.serverUrl+"/dish/createDish?owner=" + menu_id)
+            return $http.get(CONFIG.serverUrl + "/dish/createDish?owner=" + menu_id)
                 .then(
                     function(resp) {
                         return resp.data;
@@ -148,7 +166,7 @@ angular.module('starter.services', [])
 
         }
         AccountFactory.deleteDish = function(dish_id) {
-            return $http.get(CONFIG.serverUrl+"/dish/destroy/" + dish_id)
+            return $http.get(CONFIG.serverUrl + "/dish/destroy/" + dish_id)
                 .then(
                     function(resp) {
                         return resp.data;
@@ -157,7 +175,7 @@ angular.module('starter.services', [])
 
         }
         AccountFactory.addDishPic = function(dish_id, url) {
-            return $http.get(CONFIG.serverUrl+"/dish/addPic?id=" + dish_id + "&url=" + url)
+            return $http.get(CONFIG.serverUrl + "/dish/addPic?id=" + dish_id + "&url=" + url)
                 .then(
                     function(resp) {
                         return resp.data;
@@ -165,7 +183,7 @@ angular.module('starter.services', [])
                 );
         }
         AccountFactory.getMenu = function(id) {
-            return $http.get(CONFIG.serverUrl+'/menu/' + id + '/all')
+            return $http.get(CONFIG.serverUrl + '/menu/' + id + '/all')
                 .then(
                     function(resp) {
                         console.log(resp.data);
@@ -180,7 +198,7 @@ angular.module('starter.services', [])
         }
         AccountFactory.getRestaurant = function(rid, uid) {
             if (rid != null) {
-                return $http.get(CONFIG.serverUrl+'/restaurant/' + rid)
+                return $http.get(CONFIG.serverUrl + '/restaurant/' + rid)
                     .then(
                         function(resp) {
                             console.log("getRestaurant");
@@ -194,7 +212,7 @@ angular.module('starter.services', [])
                         }
                     );
             } else {
-                return $http.get(CONFIG.serverUrl+"/restaurant/createRestaurant?owner=" + uid)
+                return $http.get(CONFIG.serverUrl + "/restaurant/createRestaurant?owner=" + uid)
                     .then(
                         function(resp) {
                             console.log("create restaurant");
@@ -208,7 +226,7 @@ angular.module('starter.services', [])
             }
         }
         AccountFactory.getDish = function(id) {
-            return $http.get(CONFIG.serverUrl+'/dish/' + id)
+            return $http.get(CONFIG.serverUrl + '/dish/' + id)
                 .then(
                     function(resp) {
                         console.log(resp.data);
@@ -221,7 +239,7 @@ angular.module('starter.services', [])
                 );
         }
         AccountFactory.getOrder = function(id) {
-            return $http.get(CONFIG.serverUrl+'/order/' + id)
+            return $http.get(CONFIG.serverUrl + '/order/' + id)
                 .then(
                     function(resp) {
                         return resp.data;

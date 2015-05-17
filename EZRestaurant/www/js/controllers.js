@@ -1,5 +1,5 @@
 angular.module('starter.controllers', ['ionic', 'ngCordova'])
-    .controller("OrderCtrl", function($scope, $cordovaBarcodeScanner, $http, $state, ErrorService,OrderService) {
+    .controller("OrderCtrl", function($scope, $cordovaBarcodeScanner, $http, $state, ErrorService, OrderService) {
         $scope.orders = OrderService.orders;
         $scope.listen = function() {
             io.socket.get('/Order/listenOrder', function serverResponded(body, JWR) {
@@ -33,9 +33,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     })
 
 
-.controller('OrderDetailCtrl', function($scope, $stateParams, AccountService, $ionicModal,OrderService) {
+.controller('OrderDetailCtrl', function($scope, $stateParams, AccountService, $ionicModal, OrderService) {
     $scope.$on('$ionicView.beforeEnter', function() {
-            $scope.order = OrderService.orders[$stateParams.index];
+        $scope.order = OrderService.orders[$stateParams.index];
     });
 
     $ionicModal.fromTemplateUrl('changeQuantityModal.html', {
@@ -57,7 +57,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     $scope.closeModal = function() {
         $scope.modalQuantity.hide();
     };
-     $scope.delete = function(key) {
+    $scope.delete = function(key) {
         delete $scope.order.dishes[key];
     };
     $scope.$on('$destroy', function() {
@@ -65,18 +65,57 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     });
 })
 
-.controller('LoginCtrl', function($q, $scope, $http, $state, $ionicPopup, $ionicHistory, AccountService, ErrorService, LocalStorage) {
+.controller('LoginCtrl', function($q, $scope, $http, $state, $ionicPopup, $ionicHistory, AccountService, ErrorService, LocalStorage, $ionicModal) {
 
         $scope.postData = {};
         $scope.login = function() {
             AccountService.login($scope.postData).then(function(data) {
-
-                $state.go('tab.restaurant');
+                console.log(data);
+                var promise1 = AccountService.setUser(data.user);
+                var promise2 = LocalStorage.setObj('EZ_LOCAL_TOKEN', data.token);
+                $q.all([promise1, promise2]).then(function() {
+                    $state.go('tab.restaurant');
+                });
             }, function(err) {
                 ErrorService.popUp("WRONG email OR password!");
-            })
+            });
             return;
-        }
+        };
+        $scope.register = function() {
+            console.log("register called");
+            if ($scope.postData.password !== $scope.postData.password2) {
+                ErrorService.popUp("please enter same password");
+            } else if ($scope.postData.password.length < 8) {
+                ErrorService.popUp("password needs to be at least 8 characters long");
+            } else {
+                $scope.modal.hide();
+                AccountService.register(
+                    $scope.postData
+                ).then(function(data) {
+                    $scope.login();
+                }, function(err) {
+                    ErrorService.popUp(err.data);
+                });
+            }
+
+            return;
+        };
+        $ionicModal.fromTemplateUrl('Register.html', {
+            scope: $scope
+        }).then(function(modal) {
+            $scope.modal = modal;
+        });
+
+        $scope.openModal = function() {
+            $scope.modal.show();
+        };
+        $scope.closeModal = function() {
+            $scope.postData = {};
+            $scope.modal.hide();
+        };
+        $scope.$on('$destroy', function() {
+            $scope.modal.remove();
+        });
     })
     .controller('RestaurantCtrl', function($ionicModal, $scope, $http, $state, $ionicHistory, AccountService, LocalStorage) {
 
@@ -206,9 +245,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         }
 
     })
-    .controller("RestaurantDishCtrl", function($scope, $http, dish_data, ErrorService, $ionicModal, AccountService, FileService, $cordovaCamera, $ionicLoading, $timeout,CONFIG) {
+    .controller("RestaurantDishCtrl", function($scope, $http, dish_data, ErrorService, $ionicModal, AccountService, FileService, $cordovaCamera, $ionicLoading, $timeout, CONFIG) {
         $scope.dish = dish_data;
-        $scope.baseURL = CONFIG.serverUrl+"/images/";
+        $scope.baseURL = CONFIG.serverUrl + "/images/";
 
         $ionicModal.fromTemplateUrl('changeNameModal.html', {
             scope: $scope,
@@ -361,7 +400,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                             dish_count = dish_data.image_urls.length;
                         }
                         filename = dish_data.id + "_" + dish_count + "_dish.jpg";
-                        FileService.upload(CONFIG.serverUrl+"/file/upload", fileEntry.nativeURL, filename, success, fail);
+                        FileService.upload(CONFIG.serverUrl + "/file/upload", fileEntry.nativeURL, filename, success, fail);
                     });
                 },
                 function(err) {
