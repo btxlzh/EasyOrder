@@ -127,7 +127,7 @@ angular.module('starter.services', [])
         dataFactory.addToCart = function(dish, num) {
 
             if (dish.id in dataFactory.cart) {
-                dataFactory.cart[dish.id].num+=parseInt(num);
+                dataFactory.cart[dish.id].num += parseInt(num);
                 console.log("add exist");
                 console.log(dataFactory.cart);
 
@@ -137,8 +137,8 @@ angular.module('starter.services', [])
                 dish.num = parseInt(num);
                 //push new
                 dataFactory.cart[dish.id] = dish;
-                 console.log("new add");
-                 console.log( dataFactory.cart );
+                console.log("new add");
+                console.log(dataFactory.cart);
                 // console.log(Cart.dishes);
                 // console.log(Cart.dish_map);
 
@@ -155,9 +155,9 @@ angular.module('starter.services', [])
         }
         dataFactory.checkout = function(tableId) {
             var requestData = {};
-            if(AccountService.user){
+            if (AccountService.user) {
                 requestData.user = AccountService.user.id;
-            }else {
+            } else {
                 requestData.user = 0;
             }
             requestData.tableId = tableId;
@@ -204,6 +204,18 @@ angular.module('starter.services', [])
                     }
                 );
 
+        }
+        AccountFactory.register = function(credential) {
+            $ionicHistory.nextViewOptions({
+                disableAnimate: true,
+                disableBack: true
+            });
+            return $http.post(CONFIG.serverUrl + "/auth/register/", credential)
+                .then(
+                    function(respUser) {
+                        return respUser.data;
+                    }
+                );
         }
         AccountFactory.loginWithToken = function(token) {
             return
