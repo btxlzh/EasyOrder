@@ -22,7 +22,7 @@
     "org.apache.cordova.file"
   ],
   "cordovaPlatforms": [
-    "ios",
-    "android"
+    "android",
+    "ios"
   ]
 }
