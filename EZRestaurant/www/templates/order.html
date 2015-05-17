@@ -5,7 +5,7 @@
 	  	<button class= "button button-stable button-block" ng-click="listen()">Open</button>
 	</div>
 	<ion-list >
-		<ion-item class="list card" ng-repeat="order in orders" href="#tab/order/{{order.id}}">
+		<ion-item class="list card" ng-repeat="order in orders" href="#tab/order/{{$index}}">
           <ion-delete-button class="ion-minus-circled" ng-click="delete($index)"></ion-delete-button>
             <h2>Table:{{order.table}}<h2>
               <p>

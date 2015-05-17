@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['ionic', 'ngCordova'])
-    .controller("OrderCtrl", function($scope, $cordovaBarcodeScanner, $http, $state, ErrorService) {
-        $scope.orders = [];
+    .controller("OrderCtrl", function($scope, $cordovaBarcodeScanner, $http, $state, ErrorService,OrderService) {
+        $scope.orders = OrderService.orders;
         $scope.listen = function() {
             io.socket.get('/Order/listenOrder', function serverResponded(body, JWR) {
 
@@ -33,12 +33,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     })
 
 
-.controller('OrderDetailCtrl', function($scope, $stateParams, AccountService, $ionicModal) {
+.controller('OrderDetailCtrl', function($scope, $stateParams, AccountService, $ionicModal,OrderService) {
     $scope.$on('$ionicView.beforeEnter', function() {
-        AccountService.getOrder($stateParams.id).then(function(data) {
-            $scope.order = data;
-            console.log(data);
-        }, function(err) {})
+            $scope.order = OrderService.orders[$stateParams.index];
     });
 
     $ionicModal.fromTemplateUrl('changeQuantityModal.html', {
@@ -60,7 +57,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     $scope.closeModal = function() {
         $scope.modalQuantity.hide();
     };
-
+     $scope.delete = function(key) {
+        delete $scope.order.dishes[key];
+    };
     $scope.$on('$destroy', function() {
         $scope.modalQuantity.remove();
     });

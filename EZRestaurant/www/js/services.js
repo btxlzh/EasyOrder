@@ -1,6 +1,7 @@
 angular.module('starter.services', [])
     .factory('OrderService', function($http, $ionicHistory, $q, LocalStorage) {
         var OrderFactory = {};
+        OrderFactory.orders=[];
         return OrderFactory;
     })
     .factory('FileService', function($http, $ionicHistory, $q, LocalStorage) {

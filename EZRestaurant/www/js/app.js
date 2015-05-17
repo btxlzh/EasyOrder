@@ -52,7 +52,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             }
         })
         .state('tab.orderdetail', {
-            url: '/order/:id',
+            url: '/order/:index',
 
             views: {
                 'tab-order': {
