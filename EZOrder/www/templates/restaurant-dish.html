@@ -17,7 +17,7 @@
         <div class="item item-list-detail">
             <ion-scroll zooming="true" direction="x">
                 <!-- <div style="width: 5000px; height: 5000px; background: url('https://upload.wikimedia.org/wikipedia/commons/a/ad/Europe_geological_map-en.jpg') repeat"></div> -->
-                <img ng-repeat="image_src in dish.image_urls" src="http://localhost:1337/images/{{image_src}}" style="height:200px; display:inline;"></img>
+                <img ng-repeat="image_src in dish.image_urls" src="{{serverUrl}}/images/{{image_src}}" style="height:200px; display:inline;"></img>
             </ion-scroll>
         </div>
         <ion-list>

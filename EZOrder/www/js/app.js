@@ -10,10 +10,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         $httpProvider.defaults.withCredentials = true;
     }])
     .constant('CONFIG', {
-        serverUrl: 'http://localhost:1337'
+        serverUrl: 'http://10.148.4.211:1337'
     })
-    .run(function($ionicPlatform, AccountService) {
-
+    .run(function($ionicPlatform, AccountService,$rootScope) {
+        $rootScope.serverUrl='http://10.148.4.211:1337';
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)

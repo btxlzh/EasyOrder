@@ -3,7 +3,7 @@
         <div>
             <ion-list show-delete="shouldShowDelete" can-swipe="true">
                 <ion-item class="item item-thumbnail-left item" ng-repeat="(key, dish) in cart | filter:query" ng-click="openModal(key)">
-                    <img src="http://localhost:1337/images/{{dish.image_urls[0]}}">
+                    <img src="{{serverUrl}}/images/{{dish.image_urls[0]}}">
                     <h2>Name: {{dish.name}}</h2>
                     <h2>Unit Price: ${{dish.price}}</h2>
                     <h2>Quantity: {{dish.num}}</h2>

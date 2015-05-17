@@ -206,9 +206,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         }
 
     })
-    .controller("RestaurantDishCtrl", function($scope, $http, dish_data, ErrorService, $ionicModal, AccountService, FileService, $cordovaCamera, $ionicLoading, $timeout) {
+    .controller("RestaurantDishCtrl", function($scope, $http, dish_data, ErrorService, $ionicModal, AccountService, FileService, $cordovaCamera, $ionicLoading, $timeout,CONFIG) {
         $scope.dish = dish_data;
-        $scope.baseURL = "http://localhost:1337/images/";
+        $scope.baseURL = CONFIG.serverUrl+"/images/";
 
         $ionicModal.fromTemplateUrl('changeNameModal.html', {
             scope: $scope,
@@ -361,7 +361,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                             dish_count = dish_data.image_urls.length;
                         }
                         filename = dish_data.id + "_" + dish_count + "_dish.jpg";
-                        FileService.upload("http://localhost:1337/file/upload", fileEntry.nativeURL, filename, success, fail);
+                        FileService.upload(CONFIG.serverUrl+"/file/upload", fileEntry.nativeURL, filename, success, fail);
                     });
                 },
                 function(err) {

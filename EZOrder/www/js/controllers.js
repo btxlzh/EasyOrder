@@ -184,6 +184,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         };
 
         $scope.choose = function() {
+            console.log("click upload");
             var options = {
                 quality: 50,
                 destinationType: Camera.DestinationType.FILE_URI,
@@ -191,6 +192,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             };
             $cordovaCamera.getPicture(options).then(
                 function(imageURI) {
+                     console.log("upload succ");
                     window.resolveLocalFileSystemURI(imageURI, function(fileEntry) {
                         $scope.picData = fileEntry.nativeURL;
                         $scope.ftLoad = true;
@@ -199,6 +201,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     });
                 },
                 function(err) {
+                    console.log("upload err");
                     $ionicLoading.show({
                         template: 'Error',
                         duration: 500

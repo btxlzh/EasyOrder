@@ -19,7 +19,7 @@
         <div class="list card">
             <ion-list show-delete="shouldShowDelete" can-swipe="listCanSwipe">
                 <ion-item class="item item-thumbnail-left item" ng-repeat="dish in menu.dishes | filter:query" href="#tab/dish/{{dish.id}}">
-                    <img src="http://localhost:1337/images/{{dish.image_urls[0]}}">
+                    <img src="{{serverUrl}}/images/{{dish.image_urls[0]}}">
                     <ion-delete-button class="ion-minus-circled" ng-click="delete($index)"></ion-delete-button>
                     <h2>{{dish.name}}</h2>
                     <h2>${{dish.price}}</h2>

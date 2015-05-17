@@ -4903,7 +4903,7 @@
 
             // Whether to automatically connect a socket and save it as `io.socket`.
             autoConnect: true,
-            url: 'http://localhost:1337',
+            url: 'http://10.148.4.211:1337',
             useCORSRouteToGetCookie: false,
             // The route (path) to hit to get a x-origin (CORS) cookie
             // (or true to use the default: '/__getcookie')

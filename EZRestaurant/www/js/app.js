@@ -10,9 +10,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         $httpProvider.defaults.withCredentials = true;
 
     }])
-    .run(function($ionicPlatform, AccountService) {
+    .constant('CONFIG', {
+        serverUrl: 'http://10.148.4.211:1337'
+    })
+    .run(function($ionicPlatform, AccountService,$rootScope) {
         $ionicPlatform.ready(function() {
-
+                    $rootScope.serverUrl='http://10.148.4.211:1337';
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
             if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
