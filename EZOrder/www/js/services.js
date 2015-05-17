@@ -1,11 +1,12 @@
 angular.module('starter.services', [])
 
-.factory('DataService', function($http, AccountService, CONFIG) {
-        function getUrlVars(Url) {
+.factory('DataService', function($q,$http, AccountService, CONFIG) {
+        function getRestaurantByQRCode(Url,cb_id ) {
             var vars = {};
             var parts = url.replace(/[?&]+([^=&]+)=([^&]*)/gi,
                 function(m, key, value) {
                     vars[key] = value;
+                    cb_id(value);
                 });
             return vars;
         }
@@ -120,8 +121,7 @@ angular.module('starter.services', [])
                     }
                 );
         }
-        dataFactory.getRestaurantByQRCode = function(Image_data) {
-            return getUrlVars(Image_data.te)["id"];
+        dataFactory.getRestaurantByQRCode = function(Image_data,fun) {
         }
         dataFactory.cart = {};
         dataFactory.addToCart = function(dish, num) {

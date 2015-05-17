@@ -136,9 +136,10 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         });
         $scope.scanBarcode = function() {
             $cordovaBarcodeScanner.scan().then(function(imageData) {
-                //var restaurantID= DataService.getRestaurantByQRCode(imageData.text);
-                // state.go('tab.restaurant-detail',{'id':restaurantID});
-                alert(imageData.text);
+                var x= parseInt(imageData.text);
+
+                $state.go('tab.restaurant',{'id':x});
+                
             }, function(error) {
                 alert("error");
             });

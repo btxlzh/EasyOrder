@@ -15,7 +15,7 @@ module.exports = {
     getQRcode: function(req, res) {
         id = req.param('id');
         console.log("getQRcode");
-        var text = sails.config.EZconf.baseURL + 'restaurant/?id=' + id;
+        var text = id;
         var img = qr.image(text);
         res.writeHead(200, {
             'Content-Type': 'image/png'

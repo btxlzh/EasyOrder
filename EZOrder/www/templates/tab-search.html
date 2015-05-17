@@ -12,11 +12,9 @@
         </div>
         <ul class="list">
             <ion-item class="card" ng-repeat="one in restaurants| filter:query" href="#/tab/restaurant/{{one.id}}">
-                <h2>{{one.name}}</h2>
-                <h2>{{one.type}}</h2>
-                <h2>{{one.price}}</h2>
+                <h2>Restaurant:{{one.name}}</h2>
+                <h2>AverageCost:{{one.price}}</h2>
                 <h2>{{one.description}}</h2>
-                <h2>{{one.id}}</h2>
             </ion-item>
         </ul>
         <h2>{{msg}}</h2>
