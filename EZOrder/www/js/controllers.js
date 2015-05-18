@@ -5,11 +5,21 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         $scope.cart = DataService.cart;
         console.log(DataService.cart);
     })
-    $scope.checkout = function() {
-        DataService.checkout().then(function(resp) {
+    $scope.checkout = function(Tnum) {
+        console.log(Tnum);
+        DataService.checkout(Tnum).then(function(resp) {
+
+            $scope.order=DataService.order;
+            if(DataService.cart.length!=0){$scope.showRecent=true;}
+
             DataService.cart.length = 0;
             DataService.cart = {};
         });
+    }
+    $scope.deleteRecent=function(){
+        DataService.order.length=0;
+        $scope.showRecent=false;
+        DataService.order = {};
     }
     $scope.delete = function(key) {
         delete DataService.cart[key];

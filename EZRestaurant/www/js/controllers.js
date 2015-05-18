@@ -21,7 +21,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         });
         $scope.confirm = function(index) {
             console.log($scope.orders[index].status);
-            $scope.orders[index].status = "confirm";
+            $scope.orders[index].status = "confirmed";
             console.log($scope.orders[index].status);
         }
         $scope.complete = function(index) {

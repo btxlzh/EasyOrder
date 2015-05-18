@@ -160,9 +160,11 @@ angular.module('starter.services', [])
             } else {
                 requestData.user = 0;
             }
+            console.log(tableId);
             requestData.tableId = tableId;
             requestData.dishes = dataFactory.cart;
             requestData.restaurant = dataFactory.restaurant.id;
+            requestData.status='unconfirmed';
 
             return $http.post(CONFIG.serverUrl + '/Order/create', requestData, {
                 headers: {
@@ -171,6 +173,8 @@ angular.module('starter.services', [])
             }).then(
                 function(resp) {
                     console.log(resp.data);
+                    dataFactory.order = resp.data;
+                    
                     return resp.data;
                 },
                 function(err) {
