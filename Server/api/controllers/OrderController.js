@@ -8,12 +8,11 @@
 module.exports = {
     listenOrder: function(req, res) {
 
-        var data_from_client = req.params.all();
-        console.log(data_from_client);
+        var rid = req.param('rid');
         if (req.isSocket && req.method == 'GET') {
             // subscribe client to model changes 
             Order.watch(req);
-            console.log('User subscribed to ' + req.socket.id);
+            console.log('rid'+rid+';  User subscribed to ' + req.socket.id);
             return res.send("succ");
         }
         return res.send();
