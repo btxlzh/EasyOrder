@@ -7,13 +7,14 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     })
     $scope.checkout = function(Tnum) {
         console.log(Tnum);
-        DataService.checkout(Tnum).then(function(resp) {
+        DataService.checkout(Tnum,function(data) {
 
             $scope.order=DataService.order;
             if(DataService.cart.length!=0){$scope.showRecent=true;}
 
             DataService.cart.length = 0;
             DataService.cart = {};
+            $scope.$digest();
         });
     }
     $scope.deleteRecent=function(){
@@ -45,8 +46,25 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     $scope.$on('$destroy', function() {
         $scope.modalQuantity.remove();
     });
-})
+    io.socket.on('order', function onServerSentEvent(obj) {
+            if (obj.verb === 'updated') {
+                console.log(obj.data);
+                $scope.order =obj.data;
+                // Add the data to current chatList
+                // Call $scope.$digest to make the changes in UI
+                $scope.$digest();
+            }
+            if (obj.verb === 'destroyed') {
+                console.log(obj.data);
+                $scope.order={}
+                $scope.showRecent=false;
+                // Add the data to current chatList
+                // Call $scope.$digest to make the changes in UI
+                $scope.$digest();
+            }
+     });
 
+})
 .controller('LoginCtrl', function($q, $scope, $http, $state, $ionicPopup, $ionicHistory, AccountService, ErrorService, LocalStorage, $ionicModal) {
 
         $scope.postData = {};
@@ -120,9 +138,16 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 });
         }
     })
-    .controller("RestaurantCtrl", function($scope, $http, DataService, restaurant_data, ErrorService, AccountService, $ionicHistory, $state) {
+    .controller("RestaurantCtrl", function($scope, $http, $ionicModal,DataService, restaurant_data, ErrorService, AccountService, $ionicHistory, $state) {
         $scope.$on('$ionicView.beforeEnter', function() {
             $scope.restaurant = restaurant_data;
+            if(DataService.reservation[$scope.restaurant.id]){
+                $scope.reservation=DataService.reservation[$scope.restaurant.id];
+                $scope.showRDetail=true;
+            }else{
+
+                $scope.showRDetail=false;
+            }
             if (AccountService.user == null) {
                 $scope.color = "black";
             } else {
@@ -134,7 +159,58 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     }
                 });
             }
+            if(DataService.reservation[$scope.restaurant.id]){
+                $scope.reservation_status=DataService.reservation[$scope.restaurant.id].status;
+            }else{
+                $scope.reservation_status=null;
+            }
         });
+            $ionicModal.fromTemplateUrl('Reservation.html', {
+                scope: $scope,
+                animation: 'slide-in-up',
+                backdropClickToClose: true
+            }).then(function(modal) {
+                $scope.modalReservation = modal
+            });
+            $scope.openModal =function(){
+                $scope.modalReservation.show();
+            }
+            $scope.closeModal = function(){
+                 $scope.modalReservation.hide();
+            }
+            $scope.reserve = function(people,time){
+                DataService.reserve(people,time,function(data) {
+                    $scope.showRDetail=true;
+                    $scope.reservation=DataService.reservation[$scope.restaurant.id];
+                    $scope.$digest();
+                });
+                $scope.modalReservation.hide();
+            }
+            io.socket.on('reservation', function onServerSentEvent(obj) {
+            if (obj.verb === 'updated') {
+                console.log(obj.data);
+                //$scope.order =obj.data;
+                // Add the data to current chatList
+                // Call $scope.$digest to make the changes in UI
+                DataService.reservation[obj.data.restaurant]=obj.data;
+                
+                $scope.reservation=DataService.reservation[$scope.restaurant.id];
+                $scope.$digest();
+            }
+            if (obj.verb === 'destroyed') {
+                console.log(obj.id);
+                //$scope.order={}
+                //$scope.showRecent=false;
+                // Add the data to current chatList
+                // Call $scope.$digest to make the changes in UI
+                DataService.rejectReservation(obj.id,function(){
+                    $scope.reservation=DataService.reservation[$scope.restaurant.id];
+                     $scope.$digest();
+                });
+
+                
+            }
+     });
         $scope.addToFavorite = function() {
             AccountService.checkLogin($scope, $state, $ionicHistory).then(function(data) {
                 if (data == true) {

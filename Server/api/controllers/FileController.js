@@ -6,7 +6,6 @@
  */
 
 module.exports = {
-
     upload: function(req, res) {
         if (req.method === 'GET')
             return res.json({

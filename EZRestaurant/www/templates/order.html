@@ -7,7 +7,7 @@
 	<ion-list >
 		<ion-item class="list card" ng-repeat="order in orders" href="#tab/order/{{$index}}">
           <ion-delete-button class="ion-minus-circled" ng-click="delete($index)"></ion-delete-button>
-            <h2>Table:{{order.tableId}}<h2>
+            <h2>Table:{{order.tableId}}</h2>
               <p>
                   OrderID:{{order.id}}
               </p>
@@ -25,5 +25,25 @@
           
         </ion-item>
 	</ion-list>
+  <ion-list >
+    <ion-item class="list card" ng-repeat="reservation in reservations" >
+            <h2>Number of People :{{reservation.people}}</h2>
+              <p>
+                  Time:{{reservation.time}}
+              </p>
+              <span class="item-note">
+             <h2>{{reservation.status}}</h2>
+              </span>
+            <ion-option-button class="button-balanced"
+                             ng-click="approve($index)">
+            approve
+            </ion-option-button>
+            <ion-option-button class="button-assertive"
+                             ng-click="reject($index)">
+            reject
+          </ion-option-button>
+          
+        </ion-item>
+  </ion-list>
   </ion-content>
 </ion-view>

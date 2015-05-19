@@ -1,6 +1,7 @@
 angular.module('starter.controllers', ['ionic', 'ngCordova'])
-    .controller("OrderCtrl", function($scope, $cordovaBarcodeScanner, $http, $state, ErrorService, OrderService,AccountService) {
+    .controller("OrderCtrl", function($scope, $cordovaBarcodeScanner, $http, $state, ErrorService, OrderService,AccountService,ReservationService) {
         $scope.orders = OrderService.orders;
+        $scope.reservations = ReservationService.reservations;
         $scope.listen = function() {
             io.socket.get('/Order/listenOrder?rid='+AccountService.restaurant.id, function serverResponded(body, JWR) {
 
@@ -20,14 +21,40 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             }
         });
         $scope.confirm = function(index) {
-            console.log($scope.orders[index].status);
             $scope.orders[index].status = "confirmed";
-            console.log($scope.orders[index].status);
+            OrderService.update($scope.orders[index]).then(function(data){
+                console.log(data);
+            });
         }
         $scope.complete = function(index) {
-            $scope.orders.splice(index, 1)
+            var id =$scope.orders[index].id;
+            OrderService.complete(id).then(function(data){
+                $scope.orders.splice(index, 1);
+            })
         }
-
+        io.socket.on('reservation', function onServerSentEvent(obj) {
+            if (obj.verb === 'created') {
+                console.log(obj.data);
+                $scope.reservations.push(obj.data);
+                console.log($scope.reservations);
+                // Add the data to current chatList
+                // Call $scope.$digest to make the changes in UI
+                $scope.$digest();
+            }
+        });
+        
+        $scope.approve = function(index) {
+            $scope.reservations[index].status = "approved";
+            ReservationService.approve($scope.reservations[index]).then(function(data){
+                console.log(data);
+            });
+        }
+        $scope.reject = function(index) {
+            var id =$scope.reservations[index].id;
+            ReservationService.reject(id).then(function(data){
+                $scope.reservations.splice(index, 1);
+            })
+        }
 
 
     })
@@ -153,6 +180,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         }).then(function(modal) {
             $scope.modalDescription = modal
         })
+        
         $scope.openModal = function(mode) {
             switch (mode) {
                 case 0:

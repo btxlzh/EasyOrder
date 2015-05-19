@@ -13,6 +13,7 @@ angular.module('starter.services', [])
 
         var dataFactory = {};
         dataFactory.cart = [];
+        dataFactory.reservation  = {};
         dataFactory.getAllRestaurants = function() {
             return $http.get(CONFIG.serverUrl + '/restaurant/');
         }
@@ -153,7 +154,7 @@ angular.module('starter.services', [])
             dataFactory.cart.length = 0;
             return;
         }
-        dataFactory.checkout = function(tableId) {
+        dataFactory.checkout = function(tableId,cb) {
             var requestData = {};
             if (AccountService.user) {
                 requestData.user = AccountService.user.id;
@@ -165,23 +166,39 @@ angular.module('starter.services', [])
             requestData.dishes = dataFactory.cart;
             requestData.restaurant = dataFactory.restaurant.id;
             requestData.status='unconfirmed';
-
-            return $http.post(CONFIG.serverUrl + '/Order/create', requestData, {
-                headers: {
-                    'Content-Type': 'application/json'
+            io.socket.post('/Order/createOrder', requestData, function(data,jwres){
+                    console.log(data);
+                    dataFactory.order = data;    
+                    cb(data);
+            })
+        }
+        dataFactory.reserve= function(people,time,cb){
+            var requestData = {};
+            if (AccountService.user) {
+                requestData.user = AccountService.user.id;
+            } else {
+                requestData.user = 0;
+            }
+            requestData.people = people;
+            console.log(time);
+            requestData.time = time
+            requestData.restaurant = dataFactory.restaurant.id;
+            requestData.status='unconfirmed';
+            io.socket.post('/Reservation/createReservation', requestData, function(data,jwres){
+                    console.log(data);
+                    dataFactory.reservation[data.restaurant] = data;    
+                    cb(data);
+            })
+        }
+        dataFactory.rejectReservation=function(id,callback){
+            var x = 0;
+            console.log(dataFactory.reservation);
+            for(rid in  dataFactory.reservation) {
+                if(dataFactory.reservation[rid].id==id){
+                    dataFactory.reservation[rid].status="rejected";
                 }
-            }).then(
-                function(resp) {
-                    console.log(resp.data);
-                    dataFactory.order = resp.data;
-                    
-                    return resp.data;
-                },
-                function(err) {
-                    console.log(err);
-                    return err;
-                }
-            );
+            }
+            callback();
         }
         return dataFactory;
     })

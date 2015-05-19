@@ -1,8 +1,52 @@
 angular.module('starter.services', [])
-    .factory('OrderService', function($http, $ionicHistory, $q, LocalStorage) {
+    .factory('OrderService', function($http, $ionicHistory, $q, LocalStorage,CONFIG) {
         var OrderFactory = {};
         OrderFactory.orders = [];
+        OrderFactory.update =function(newObj){
+
+            return $http.post(CONFIG.serverUrl + "/Order/update/"+newObj.id, newObj)
+                    .then(
+                        function(resp) {
+
+                            return resp.data;
+                        });
+
+        }
+        OrderFactory.complete =function(id){
+
+            return $http.get(CONFIG.serverUrl + "/Order/destroy/"+id)
+                    .then(
+                        function(resp) {
+
+                            return resp.data;
+                        });
+
+        }
         return OrderFactory;
+    })
+    .factory('ReservationService', function($http, $ionicHistory, $q, LocalStorage,CONFIG) {
+        var ReservationFactory = {};
+        ReservationFactory.reservations = [];
+        ReservationFactory.approve =function(newObj){
+
+            return $http.post(CONFIG.serverUrl + "/Reservation/update/"+newObj.id, newObj)
+                    .then(
+                        function(resp) {
+
+                            return resp.data;
+                        });
+
+        }
+        ReservationFactory.reject =function(id){
+
+            return $http.get(CONFIG.serverUrl + "/Reservation/destroy/"+id)
+                    .then(
+                        function(resp) {
+                            return resp.data;
+                        });
+
+        }
+        return ReservationFactory;
     })
     .factory('FileService', function($http, $ionicHistory, $q, LocalStorage, CONFIG) {
         var FileFactory = {};

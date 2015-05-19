@@ -13,6 +13,6 @@
 
 module.exports.EZconf = {
   //global variable
-  baseURL: 'http://localhost:1337/'
+  baseURL: 'http://localhost:1337/',
 
 };
