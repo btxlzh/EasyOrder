@@ -10,7 +10,8 @@ angular.module('starter', ['ionic', 'starter.mapDirectives', 'starter.controller
         $httpProvider.defaults.withCredentials = true;
     }])
     .constant('CONFIG', {
-        serverUrl: "http://localhost:1337" //'http://btxlzh.xicp.net:1337'
+        serverUrl: "http://localhost:1337", //'http://btxlzh.xicp.net:1337'
+        distance: 50
     })
     .run(function($ionicPlatform, AccountService, $rootScope) {
         $rootScope.serverUrl = "http://localhost:1337";

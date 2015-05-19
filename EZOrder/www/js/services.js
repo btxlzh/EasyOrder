@@ -1,6 +1,6 @@
 angular.module('starter.services', [])
 
-.factory('DataService', function($q, $http, AccountService, CONFIG) {
+.factory('DataService', function($q, $http, AccountService, CONFIG, $rootScope) {
         function getRestaurantByQRCode(Url, cb_id) {
             var vars = {};
             var parts = url.replace(/[?&]+([^=&]+)=([^&]*)/gi,
@@ -27,6 +27,40 @@ angular.module('starter.services', [])
                         return err;
                     }
                 );
+        }
+        dataFactory.calculate = function(latitude, longitude, other) {
+            if (!other || other === undefined || other.position === undefined || latitude === undefined || longitude === undefined) {
+                return false;
+            } else {
+
+                var dist = distance(other.position[0], other.position[1], latitude, longitude);
+                console.log("distance: " + dist);
+                if (dist < CONFIG.distance)
+                    return true;
+            }
+            return false;
+
+
+        }
+
+        function distance(lat1, lon1, lat2, lon2, unit) {
+            var radlat1 = Math.PI * lat1 / 180
+            var radlat2 = Math.PI * lat2 / 180
+            var radlon1 = Math.PI * lon1 / 180
+            var radlon2 = Math.PI * lon2 / 180
+            var theta = lon1 - lon2
+            var radtheta = Math.PI * theta / 180
+            var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+            dist = Math.acos(dist)
+            dist = dist * 180 / Math.PI
+            dist = dist * 60 * 1.1515
+            if (unit == "K") {
+                dist = dist * 1.609344
+            }
+            if (unit == "N") {
+                dist = dist * 0.8684
+            }
+            return dist
         }
         dataFactory.setRestaurantLocation = function(id, lat, lan) {
             $http.get(CONFIG.serverUrl + '/restaurant/update/' + id + '?position=' + lat + '&position' + lan);

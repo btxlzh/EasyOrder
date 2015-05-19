@@ -122,9 +122,10 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 });
         }
     })
-    .controller("RestaurantCtrl", function($scope, $http, DataService, restaurant_data, ErrorService, AccountService, $ionicHistory, $state) {
+    .controller("RestaurantCtrl", function($rootScope, $scope, $http, DataService, restaurant_data, ErrorService, AccountService, $ionicHistory, $state) {
         $scope.$on('$ionicView.beforeEnter', function() {
             $scope.restaurant = restaurant_data;
+            $rootScope.currentRestaurant = restaurant_data;
             if (AccountService.user == null) {
                 $scope.color = "black";
             } else {
@@ -385,35 +386,69 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     });
 })
 
-.controller('MapCtrl', function($scope, $ionicLoading, $compile) {
+.controller('MapCtrl', function($scope, $ionicLoading, $compile, DataService) {
     $scope.init = function() {
+        $ionicLoading.show({
+            content: 'Getting current location...',
+            showBackdrop: false
+        });
         var myLatlng = new google.maps.LatLng(43.07493, -89.381388);
 
         var mapOptions = {
-            center: myLatlng,
+            //center: myLatlng,
             zoom: 16,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         var map = new google.maps.Map(document.getElementById("map"),
             mapOptions);
+        var contentString = [];
+        var compiled = [];
 
-        //Marker + infowindow + angularjs compiled ng-click
-        var contentString = "<div><a ng-click='clickTest()'>Click me!</a></div>";
-        var compiled = $compile(contentString)($scope);
+        var infowindow = [];
 
-        var infowindow = new google.maps.InfoWindow({
-            content: compiled[0]
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+            myLatlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+            $ionicLoading.hide();
+            // var marker = new google.maps.Marker({
+  //     position: myLatlng,
+  //     map: $scope.map
+  // });
+            DataService.getAllRestaurants()
+                .success(function(data) {
+
+                    console.log(data);
+                    var infoWindow = new google.maps.InfoWindow();
+                    for (var i = 0; i < data.length; i++) {
+                        if (DataService.calculate(pos.coords.latitude, pos.coords.longitude, data[i]) === true) {
+                            contentString[i] = "<div style='height=100px;'><h3>" + data[i].name + "<h3><p>" + data[i].address + "<p></div>";
+                            //compiled[i] = $compile(contentString[i])($scope);
+
+                            var resLatLng = new google.maps.LatLng(data[i].position[0], data[i].position[1]);
+                            var markers = new google.maps.Marker({
+                                position: resLatLng,
+                                map: $scope.map,
+                                infoWindowContent: contentString[i]
+                            });
+                            console.log(infowindow[i]);
+                            google.maps.event.addListener(markers, 'click', function() {
+                                infoWindow.setContent(this.infoWindowContent);
+                                infoWindow.open($scope.map, this);
+                            });
+
+                        }
+                    }
+                })
+                .error(function(error) {
+                    ErrorService.popUp("unable to get restaurants data from server");
+                });
+        }, function(error) {
+            alert('Unable to get location: ' + error.message);
         });
 
-        var marker = new google.maps.Marker({
-            position: myLatlng,
-            map: map,
-            title: 'Uluru (Ayers Rock)'
-        });
 
-        google.maps.event.addListener(marker, 'click', function() {
-            infowindow.open(map, marker);
-        });
+
+
 
         $scope.map = map;
     };

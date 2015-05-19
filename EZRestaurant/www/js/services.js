@@ -250,7 +250,9 @@ angular.module('starter.services', [])
                     }
                 );
         }
-
+        AccountFactory.setLocation = function(id, addr, lat, lon) {
+            return $http.get(CONFIG.serverUrl + '/restaurant/update/' + id + "?address=" + addr + "&position=" + lat + "&position=" + lon);
+        }
         return AccountFactory;
     })
     .factory('ErrorService', function($ionicPopup) {

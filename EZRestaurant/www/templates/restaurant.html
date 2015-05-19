@@ -23,6 +23,12 @@
              <h2>{{restaurant.price}}</h2>
           </span>
                 </a>
+                <a class="item item-icon-left" ng-click='openMap()'>
+                    <i class="icon ion-ios-location"></i> address
+                    <span class="item-note">
+             <h2>{{restaurant.address}}</h2>
+          </span>
+                </a>
                 <a class="item item-icon-left" href="#tab/qrcode/{{restaurant.id}}">
                     <i class="icon ion-qr-scanner"></i> QR Code
                 </a>
