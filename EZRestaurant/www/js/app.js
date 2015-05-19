@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'localStorageServices', 'ngCordova'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'localStorageServices', 'ngCordova', 'ion-google-place'])
     .config(['$httpProvider', function($httpProvider) {
         $httpProvider.defaults.withCredentials = true;
 
@@ -13,9 +13,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     .constant('CONFIG', {
         serverUrl: 'http://btxlzh.xicp.net:1337'
     })
-    .run(function($ionicPlatform, AccountService,$rootScope) {
+    .run(function($ionicPlatform, AccountService, $rootScope) {
         $ionicPlatform.ready(function() {
-                    $rootScope.serverUrl='http://btxlzh.xicp.net:1337';
+            $rootScope.serverUrl = 'http://btxlzh.xicp.net:1337';
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)ionic 
             if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {

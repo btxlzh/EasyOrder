@@ -1,7 +1,7 @@
 angular.module('starter.services', [])
 
-.factory('DataService', function($q,$http, AccountService, CONFIG) {
-        function getRestaurantByQRCode(Url,cb_id ) {
+.factory('DataService', function($q, $http, AccountService, CONFIG) {
+        function getRestaurantByQRCode(Url, cb_id) {
             var vars = {};
             var parts = url.replace(/[?&]+([^=&]+)=([^&]*)/gi,
                 function(m, key, value) {
@@ -27,6 +27,9 @@ angular.module('starter.services', [])
                         return err;
                     }
                 );
+        }
+        dataFactory.setRestaurantLocation = function(id, lat, lan) {
+            $http.get(CONFIG.serverUrl + '/restaurant/update/' + id + '?position=' + lat + '&position' + lan);
         }
         dataFactory.isFavorite = function(restaurant_id) {
             return $http.get(CONFIG.serverUrl + '/user/isFavorite?user=' + AccountService.user.id + "&restaurant=" + restaurant_id)
@@ -121,8 +124,7 @@ angular.module('starter.services', [])
                     }
                 );
         }
-        dataFactory.getRestaurantByQRCode = function(Image_data,fun) {
-        }
+        dataFactory.getRestaurantByQRCode = function(Image_data, fun) {}
         dataFactory.cart = {};
         dataFactory.addToCart = function(dish, num) {
 
@@ -164,7 +166,7 @@ angular.module('starter.services', [])
             requestData.tableId = tableId;
             requestData.dishes = dataFactory.cart;
             requestData.restaurant = dataFactory.restaurant.id;
-            requestData.status='unconfirmed';
+            requestData.status = 'unconfirmed';
 
             return $http.post(CONFIG.serverUrl + '/Order/create', requestData, {
                 headers: {
@@ -174,7 +176,7 @@ angular.module('starter.services', [])
                 function(resp) {
                     console.log(resp.data);
                     dataFactory.order = resp.data;
-                    
+
                     return resp.data;
                 },
                 function(err) {
