@@ -1,9 +1,11 @@
 angular.module('starter.controllers', ['ionic', 'ngCordova'])
+
     .controller("OrderCtrl", function($scope, $cordovaBarcodeScanner, $http, $state, ErrorService, OrderService,AccountService,ReservationService) {
+
         $scope.orders = OrderService.orders;
         $scope.reservations = ReservationService.reservations;
         $scope.listen = function() {
-            io.socket.get('/Order/listenOrder?rid='+AccountService.restaurant.id, function serverResponded(body, JWR) {
+            io.socket.get('/Order/listenOrder?rid=' + AccountService.restaurant.id, function serverResponded(body, JWR) {
 
                 // JWR ==> "JSON WebSocket Response"
                 console.log('Sails responded with: ', body);
@@ -144,11 +146,12 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             $scope.modal.remove();
         });
     })
-    .controller('RestaurantCtrl', function($ionicModal, $scope, $http, $state, $ionicHistory, AccountService, LocalStorage) {
+    .controller('RestaurantCtrl', function($rootScope, $ionicModal, $scope, $http, $state, $ionicHistory, AccountService, LocalStorage) {
 
         $scope.$on('$ionicView.beforeEnter', function() {
             AccountService.getUser().then(function(data) {
                 $scope.restaurant = data;
+                $rootScope.restaurant_ = data;
                 console.log(data);
             }, function(err) {
                 $ionicHistory.nextViewOptions({
@@ -227,6 +230,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             $scope.restaurant.description = newDescription;
             AccountService.editRestaurant($scope.restaurant.id, 'description', newDescription);
             $scope.modalDescription.hide();
+        };
+        $scope.openMap = function() {
+            $state.go('tab.map');
         }
 
 
@@ -439,5 +445,117 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 })
         };
 
+    })
+    .controller('MapCtrl', function($rootScope, $scope, $ionicLoading, $compile, AccountService) {
+        $scope.init = function() {
+            $ionicLoading.show({
+                content: 'Getting current location...',
+                showBackdrop: false
+            });
+            var mapOptions = {
+                //center: myLatlng,
+                zoom: 16,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var map = new google.maps.Map(document.getElementById("map"),
+                mapOptions);
+            var contentString = "<div style='height=100px;'>" + AccountService.restaurant.address + "</div>";
+            var compiled = $compile(contentString)($scope);
 
+            var infowindow = new google.maps.InfoWindow({
+                content: compiled[0]
+            });
+            if (AccountService.restaurant.position === undefined) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+                    myLatlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                    $ionicLoading.hide();
+                    var marker = new google.maps.Marker({
+                        position: myLatlng,
+                        map: $scope.map,
+                    });
+                }, function(error) {
+                    alert('Unable to get location: ' + error.message);
+                });
+            } else {
+                myLatlng = new google.maps.LatLng(AccountService.restaurant.position[0], AccountService.restaurant.position[1]);
+                map.setCenter(myLatlng);
+
+                $ionicLoading.hide();
+                var marker = new google.maps.Marker({
+                    position: myLatlng,
+                    map: map,
+
+                });
+                google.maps.event.addListener(marker, 'click', function() {
+                    infowindow.open($scope.map, marker);
+                });
+            }
+
+            $scope.map = map;
+        };
+        //google.maps.event.addDomListener(window, 'load', initialize);
+        $scope.search_data = {
+            location: ''
+        };
+        $scope.centerOnMe = function() {
+            if (!$scope.map) {
+                return;
+            }
+
+            $ionicLoading.show({
+                content: 'Getting current location...',
+                showBackdrop: false
+            });
+
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+                myLatlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                $ionicLoading.hide();
+                var marker = new google.maps.Marker({
+                    position: myLatlng,
+                    map: $scope.map,
+
+                });
+            }, function(error) {
+                alert('Unable to get location: ' + error.message);
+            });
+        };
+
+        $scope.addToAddres = function() {
+            AccountService.setLocation($rootScope.restaurant_.id, $scope.info, $scope.latitude, $scope.longitude);
+            AccountService.restaurant.address = $scope.info;
+
+        };
+        $scope.search = function(info, latitude, longitude) {
+            $scope.info = info;
+            $scope.latitude = latitude;
+            $scope.longitude = longitude;
+            //Marker + infowindow + angularjs compiled ng-click
+            var contentString = "<div style='height=100px;'>" + info + "</a><button class=\"button-clear\" ng-click='addToAddres()' >select address</button></div>";
+            var compiled = $compile(contentString)($scope);
+
+            var infowindow = new google.maps.InfoWindow({
+                content: compiled[0]
+            });
+            $scope.map.setCenter(new google.maps.LatLng(latitude, longitude));
+            myLatlng = new google.maps.LatLng(latitude, longitude);
+            $ionicLoading.hide();
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                map: $scope.map,
+
+            });
+            google.maps.event.addListener(marker, 'click', function() {
+                infowindow.open($scope.map, marker);
+            });
+        }
+        $scope.$watch('search_data.location', function(newVal, oldVal) {
+            console.log('watch', newVal, oldVal)
+            if (newVal.hasOwnProperty('formatted_address')) {
+                console.log($scope.search_data.location);
+
+                $scope.search($scope.search_data.location.formatted_address, $scope.search_data.location.geometry.location.A, $scope.search_data.location.geometry.location.F);
+            }
+        });
     });

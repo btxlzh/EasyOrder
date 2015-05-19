@@ -5,17 +5,17 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'localStorageServices', 'ngCordova'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'localStorageServices', 'ngCordova', 'ion-google-place'])
     .config(['$httpProvider', function($httpProvider) {
         $httpProvider.defaults.withCredentials = true;
 
     }])
     .constant('CONFIG', {
-        serverUrl: 'http://btxlzh.xicp.net:1337'
+        serverUrl: "http://localhost:1337"
     })
-    .run(function($ionicPlatform, AccountService,$rootScope) {
+    .run(function($ionicPlatform, AccountService, $rootScope) {
         $ionicPlatform.ready(function() {
-                    $rootScope.serverUrl='http://btxlzh.xicp.net:1337';
+            $rootScope.serverUrl = "http://localhost:1337";
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)ionic 
             if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
@@ -102,6 +102,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 'tab-restaurant': {
                     templateUrl: 'templates/restaurant.html',
                     controller: 'RestaurantCtrl',
+                }
+            }
+        })
+        .state('tab.map', {
+            url: '/restaurant/map',
+            views: {
+                'tab-restaurant': {
+                    templateUrl: 'templates/map.html',
+                    controller: 'MapCtrl'
                 }
             }
         })
