@@ -3,7 +3,6 @@
         <div>
             <button class="button button-stable button-block" ng-click="listen()">Open</button>
         </div>
-        <ion-google-place placeholder="Enter an address, Apt# and ZIP" ng-model="location" />
         <ion-list>
             <ion-item class="list card" ng-repeat="order in orders" href="#tab/order/{{$index}}">
                 <ion-delete-button class="ion-minus-circled" ng-click="delete($index)"></ion-delete-button>
