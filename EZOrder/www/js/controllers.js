@@ -56,7 +56,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             AccountService.login($scope.postData).then(function(data) {
                 console.log(data);
                 var promise1 = AccountService.setUser(data.user);
-                var promise2 = LocalStorage.setObj('EZ_LOCAL_TOKEN', data.token);
+                var promise2 = LocalStorage.set('EZ_LOCAL_TOKEN', data.token.token);
                 $q.all([promise1, promise2]).then(function() {
                     $state.go('tab.account');
                 });

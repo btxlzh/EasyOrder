@@ -1,8 +1,8 @@
 angular.module('starter.controllers', ['ionic', 'ngCordova'])
-    .controller("OrderCtrl", function($scope, $cordovaBarcodeScanner, $http, $state, ErrorService, OrderService) {
+    .controller("OrderCtrl", function($scope, $cordovaBarcodeScanner, $http, $state, ErrorService, OrderService,AccountService) {
         $scope.orders = OrderService.orders;
         $scope.listen = function() {
-            io.socket.get('/Order/listenOrder', function serverResponded(body, JWR) {
+            io.socket.get('/Order/listenOrder?rid='+AccountService.restaurant.id, function serverResponded(body, JWR) {
 
                 // JWR ==> "JSON WebSocket Response"
                 console.log('Sails responded with: ', body);
@@ -72,7 +72,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             AccountService.login($scope.postData).then(function(data) {
                 console.log(data);
                 var promise1 = AccountService.setUser(data.user);
-                var promise2 = LocalStorage.setObj('EZ_LOCAL_TOKEN', data.token);
+                var promise2 = LocalStorage.set('EZ_LOCAL_TOKEN', data.token.token);
                 $q.all([promise1, promise2]).then(function() {
                     $state.go('tab.restaurant');
                 });
