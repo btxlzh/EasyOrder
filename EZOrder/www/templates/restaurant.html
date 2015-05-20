@@ -80,3 +80,27 @@
         </ion-content>
     </div>
 </script>
+<script id="Reservation.html" type="text/ng-template">
+    <div class="modal ">
+        <ion-header-bar>
+            <h1 class="title">Reservation</h1>
+        </ion-header-bar>
+        <ion-content>
+            <div style="padding-left:10px;padding-right:10px;">
+                <div class="list list-inset">
+                    <label class="item item-input">
+                        <input type="number" placeholder="How many people" ng-model="people" />
+                       
+                    </label>
+                    <label class="item item-input">
+                      <input type="number" placeholder="Arrive time in minute" ng-model="Rtime" />
+                    </label>
+                </div>
+                <div class="button-bar ">
+                    <button class="button button-light" ng-click="reserve(people,Rtime)">Done</button>
+                    <button class="button button-light" ng-click="closeModal()">Cancel</button>
+                </div>
+            </div>
+        </ion-content>
+    </div>
+</script>
